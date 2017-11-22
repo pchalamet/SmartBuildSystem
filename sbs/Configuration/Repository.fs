@@ -8,10 +8,7 @@ type Configuration =
     { Dependencies : Master.Repository set }
 
 
-
 type private RepositoryConfig = FSharp.Configuration.YamlConfig<"Examples/Repository.yaml">
-
-
 
 
 let private convert (masterConfig : Master.Configuration) (from : RepositoryConfig) =
@@ -21,8 +18,10 @@ let private convert (masterConfig : Master.Configuration) (from : RepositoryConf
 
 
 let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Configuration) =
-    // validate repo name...
-    let repo = masterConfig.Repositories |> Seq.find (fun x -> x.Name = repoName)
+    // validate repo name
+    let repo = match masterConfig.Repositories |> Seq.tryFind (fun x -> x.Name = repoName) with
+               | Some x -> x
+               | None -> failwithf "Repository %A does not exist" repoName
 
     // Load configuration
     let config = RepositoryConfig()
