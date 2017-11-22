@@ -21,8 +21,12 @@ let private convert (masterConfig : Master.Configuration) (from : RepositoryConf
 
 
 let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Configuration) =
+    // validate repo name...
+    let repo = masterConfig.Repositories |> Seq.find (fun x -> x.Name = repoName)
+
+    // Load configuration
     let config = RepositoryConfig()
-    let content = wsDir |> GetDirectory repoName
+    let content = wsDir |> GetDirectory repo.Name
                         |> GetFile "build.yaml"
                         |> ReadAllText
     content |> config.LoadText

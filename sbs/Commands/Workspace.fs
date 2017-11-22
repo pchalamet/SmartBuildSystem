@@ -6,7 +6,7 @@ let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     if wsDir.Exists then failwithf "Workspace already exists"
 
     // first clone master repository
-    let masterRepo = { Configuration.Master.Repository.Name = "MasterBuild"
+    let masterRepo = { Configuration.Master.Repository.Name = ".sbs"
                        Configuration.Master.Repository.Uri = Helpers.Env.MasterRepository () }
     Core.Git.GitClone masterRepo wsDir "master" true
         |> Helpers.IO.CheckResponseCode

@@ -16,7 +16,7 @@ let EnsureExists (dir : DirectoryInfo) =
     dir
 
 let CurrentDir () =
-    Environment.CurrentDirectory
+    Environment.CurrentDirectory |> DirectoryInfo
 
 let ReadAllText (fileName : FileInfo) =
     fileName.FullName |> File.ReadAllText
