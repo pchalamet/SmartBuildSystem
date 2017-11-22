@@ -69,8 +69,8 @@
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
     <Compile Include="Core\Git.fs" />
-    <Compile Include="Commands\Workspace.fs" />
     <Compile Include="Commands\Sources.fs" />
+    <Compile Include="Commands\Workspace.fs" />
     <Compile Include="Commands\Help.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
