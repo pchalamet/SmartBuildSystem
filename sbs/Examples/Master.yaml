@@ -1,0 +1,5 @@
+﻿repositories:
+  - name:
+    uri: blah blah
+  - name: titi
+    uri: pouet
