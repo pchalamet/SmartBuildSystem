@@ -28,6 +28,7 @@ type private Token =
     | Clone
     | Build
     | Rebuild
+    | Checkout
 
 let private (|Token|_|) (token : string) =
     match token with
@@ -37,6 +38,7 @@ let private (|Token|_|) (token : string) =
     | "clone" -> Some Token.Clone
     | "build" -> Some Token.Build
     | "rebuild" -> Some Token.Rebuild
+    | "checkout" -> Some Token.Checkout
     | _ -> None
 
 
@@ -71,6 +73,11 @@ let rec private commandClone (shallow : bool) (deps : bool) (refs : bool) (args 
     | [Param name] -> Command.Clone { Name = name; Shallow = shallow; Dependencies = deps; References = refs }
     | _ -> Command.Error MainCommand.Clone
 
+let private commandCheckout (args : string list) =
+    match args with
+    | [Param branch] -> Command.Checkout { Branch = branch }
+    | _ -> Command.Error MainCommand.Checkout
+
 let rec private commandBuild (clean : bool) (config : string) (args : string list) =
     match args with
     | TokenOption TokenOption.Debug :: tail -> tail |> commandBuild clean "Debug" 
@@ -87,6 +94,7 @@ let Parse (args : string list) : Command =
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false false false
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
+    | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | _ -> Command.Error MainCommand.Usage
 
 

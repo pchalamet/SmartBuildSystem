@@ -6,7 +6,7 @@ open System
 
 let consoleLock = System.Object()
 
-let ConsoleDisplay (c : ConsoleColor) (s : string) =
+let PrintConsole (c : ConsoleColor) (s : string) =
     let oldColor = Console.ForegroundColor
     try
         Console.ForegroundColor <- c
@@ -15,8 +15,9 @@ let ConsoleDisplay (c : ConsoleColor) (s : string) =
         Console.ForegroundColor <- oldColor
 
 
-let DisplayInfo msg = ConsoleDisplay ConsoleColor.Cyan ("- " + msg)
-let DisplayError msg = ConsoleDisplay ConsoleColor.Red msg
+let PrintInfo msg = PrintConsole ConsoleColor.Yellow ("- " + msg)
+let PrintSuccess msg = PrintConsole ConsoleColor.Green msg
+let PrintError msg = PrintConsole ConsoleColor.Red msg
 
 let PrintOutput info (execResult : Helpers.IO.Result) =
     let rec printl lines =
@@ -25,7 +26,7 @@ let PrintOutput info (execResult : Helpers.IO.Result) =
         | [] -> ()
 
     let display () =
-        info |> DisplayInfo
+        info |> PrintInfo
         execResult.Out |> printl
         execResult.Error |> printl
         execResult

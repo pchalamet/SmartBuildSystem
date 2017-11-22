@@ -15,6 +15,9 @@ let EnsureExists (dir : DirectoryInfo) =
     if not dir.Exists then dir.Create()
     dir
 
+let Exists (dir : DirectoryInfo) =
+    dir.Exists
+
 let CurrentDir () =
     Environment.CurrentDirectory |> DirectoryInfo
 

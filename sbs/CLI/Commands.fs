@@ -9,6 +9,9 @@ type CloneRepository =
       Dependencies : bool
       References : bool }
 
+type CheckoutRepositories =
+    { Branch : string }
+
 type BuildRepository =
     { Name : string 
       Config : string
@@ -19,6 +22,7 @@ type MainCommand =
     | Usage
     | Init
     | Clone
+    | Checkout
     | Build
     | Unknown
 
@@ -28,5 +32,6 @@ type Command =
     | Usage
     | Init of InitWorkspace
     | Clone of CloneRepository
+    | Checkout of CheckoutRepositories
     | Build of BuildRepository
     | Error of MainCommand

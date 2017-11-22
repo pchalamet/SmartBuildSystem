@@ -7,6 +7,7 @@ let processMain argv =
     match cmd with
     | Command.Init info -> Commands.Init.InitWorkspace info
     | Command.Clone info -> Commands.Sources.Clone info
+    | Command.Checkout info -> Commands.Sources.Checkout info
     | Command.Build info -> Commands.Sources.Build info
     | Command.Usage -> Commands.Help.PrintUsage MainCommand.Unknown
     | Command.Error info -> Commands.Help.PrintUsage info
@@ -26,7 +27,7 @@ let tryMain verbose argv =
                        else let sep = "---------------------------------------------------"
                             sprintf "%s\n%A\n%s" sep x sep
                
-             Helpers.Console.DisplayError err
+             Helpers.Console.PrintError err
              5
 
 [<EntryPoint>]
