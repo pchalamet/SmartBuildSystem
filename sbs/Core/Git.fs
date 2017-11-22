@@ -3,8 +3,8 @@ open System.IO
 open Helpers.Fs
 open Helpers.Exec
 
-let GitClone (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (branch : string) (shallow : bool) =
-    let bronly = sprintf "--branch %s --no-single-branch" branch
+let GitClone (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (shallow : bool) =
+    let bronly = "--no-single-branch"
     let depth = if shallow then "--depth=1"
                 else ""
 

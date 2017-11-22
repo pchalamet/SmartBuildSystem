@@ -8,7 +8,7 @@ let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     // first clone master repository
     let masterRepo = { Configuration.Master.Repository.Name = ".sbs"
                        Configuration.Master.Repository.Uri = Helpers.Env.MasterRepository () }
-    Core.Git.GitClone masterRepo wsDir "master" false
+    Core.Git.GitClone masterRepo wsDir false
         |> Helpers.IO.CheckResponseCode
 
     let currentDir = System.Environment.CurrentDirectory
