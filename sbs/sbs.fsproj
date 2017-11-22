@@ -68,6 +68,8 @@
     <Compile Include="CLI\CommandLine.fs" />
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
+    <Compile Include="D:\src\smart\SmartBuildSystem\sbs\Core\Algorithm.fs" />
+    <Compile Include="Core\MsBuild.fs" />
     <Compile Include="Core\Git.fs" />
     <Compile Include="Commands\Sources.fs" />
     <Compile Include="Commands\Workspace.fs" />

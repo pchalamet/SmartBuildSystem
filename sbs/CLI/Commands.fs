@@ -10,7 +10,9 @@ type CloneRepository =
       References : bool }
 
 type BuildRepository =
-    { Name : string }
+    { Name : string 
+      Config : string
+      Clean : bool }
 
 [<RequireQualifiedAccess>]
 type MainCommand =

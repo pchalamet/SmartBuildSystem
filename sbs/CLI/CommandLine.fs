@@ -11,12 +11,14 @@ type private TokenOption =
     | Deps
     | Refs
     | Shallow
+    | Debug
     
 let private (|TokenOption|_|) (token : string) =
     match token with
     | "--deps" -> Some TokenOption.Deps
     | "--refs" -> Some TokenOption.Refs
     | "--shallow" -> Some TokenOption.Shallow
+    | "--debug" -> Some TokenOption.Debug
     | _ -> None
 
 type private Token =
@@ -25,6 +27,7 @@ type private Token =
     | Init
     | Clone
     | Build
+    | Rebuild
 
 let private (|Token|_|) (token : string) =
     match token with
@@ -33,6 +36,7 @@ let private (|Token|_|) (token : string) =
     | "init" -> Some Token.Init
     | "clone" -> Some Token.Clone
     | "build" -> Some Token.Build
+    | "rebuild" -> Some Token.Rebuild
     | _ -> None
 
 
@@ -67,9 +71,12 @@ let rec private commandClone (shallow : bool) (deps : bool) (refs : bool) (args 
     | [Param name] -> Command.Clone { Name = name; Shallow = shallow; Dependencies = deps; References = refs }
     | _ -> Command.Error MainCommand.Clone
 
-let rec private commandBuild (args : string list) =
+let rec private commandBuild (clean : bool) (config : string) (args : string list) =
     match args with
-    | [Param name] -> Command.Build { Name = name }
+    | TokenOption TokenOption.Debug :: tail -> tail |> commandBuild clean "Debug" 
+    | [Param name] -> Command.Build { Name = name 
+                                      Clean = clean
+                                      Config = config }
     | _ -> Command.Error MainCommand.Build
 
 let Parse (args : string list) : Command =
@@ -78,7 +85,8 @@ let Parse (args : string list) : Command =
     | Token Token.Usage :: cmdArgs -> cmdArgs |> commandUsage
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false false false
-    | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild
+    | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
+    | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | _ -> Command.Error MainCommand.Usage
 
 
