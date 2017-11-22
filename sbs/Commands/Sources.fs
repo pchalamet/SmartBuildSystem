@@ -15,8 +15,8 @@ let rec Clone (info : CLI.Commands.CloneRepository) =
     // clone dependencies
     if info.Dependencies then
         let repoConfig = Configuration.Repository.Load wsDir repo.Name config
-        repoConfig.Dependencies |> Seq.iter (fun x -> { info with CLI.Commands.CloneRepository.Name = x.Name}
-                                                            |> Clone )
+        repoConfig.Dependencies |> Seq.map (fun x -> { info with CLI.Commands.CloneRepository.Name = x.Name})
+                                |> Seq.iter Clone
 
 let Build (info : CLI.Commands.BuildRepository) =
     ()
