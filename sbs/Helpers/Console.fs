@@ -15,7 +15,7 @@ let PrintConsole (c : ConsoleColor) (s : string) =
         Console.ForegroundColor <- oldColor
 
 
-let PrintInfo msg = PrintConsole ConsoleColor.Yellow ("- " + msg)
+let PrintInfo msg = PrintConsole ConsoleColor.Yellow (">>> " + msg)
 let PrintSuccess msg = PrintConsole ConsoleColor.Green msg
 let PrintError msg = PrintConsole ConsoleColor.Red msg
 

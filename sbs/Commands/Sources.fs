@@ -42,8 +42,8 @@ let Build (info : CLI.Commands.BuildRepository) =
     if repoDir.Exists |> not then failwithf "Repository %A is not cloned" repo.Name
     let slns = repoDir.EnumerateFiles("*.sln", System.IO.SearchOption.AllDirectories)
 
-    let buildRepo x = 
-        Helpers.Console.PrintInfo (sprintf "Building solution %A" x)
+    let buildRepo (x : System.IO.FileInfo) = 
+        Helpers.Console.PrintInfo (sprintf "Building solution %A" x.Name)
         Core.MsBuild.Build info.Clean info.Config wsDir x
 
     slns |> Seq.iter buildRepo
