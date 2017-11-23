@@ -11,7 +11,7 @@ let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     // first clone master repository
     let masterRepo = { Configuration.Master.Repository.Name = ".sbs"
                        Configuration.Master.Repository.Uri = Helpers.Env.MasterRepository () }
-    Core.Git.Clone masterRepo wsDir false
+    Tools.Git.Clone masterRepo wsDir false
         |> Helpers.IO.CheckResponseCode
 
     let currentDir = System.Environment.CurrentDirectory
@@ -110,7 +110,7 @@ let CreateView (cmd : CLI.Commands.CreateView) =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
 
-    let selectedRepos = Core.PatternMatching.FilterMatch (config.Repositories) (fun x -> x.Name) (cmd.Patterns |> Set)
+    let selectedRepos = Helpers.PatternMatching.FilterMatch (config.Repositories) (fun x -> x.Name) (cmd.Patterns |> Set)
     let repos = if cmd.Dependencies then gatherDependencies wsDir config selectedRepos
                 else selectedRepos
     let projects = repos |> Seq.fold (fun s t -> s @ (gatherProjects wsDir t)) List.empty
@@ -125,4 +125,4 @@ let Build (cmd : CLI.Commands.BuildView) =
     if sln.Exists |> not then failwithf "View %A does not exist" cmd.Name
 
     sprintf "Building view %A" cmd.Name |> Helpers.Console.PrintInfo
-    Core.MsBuild.Build cmd.Clean cmd.Config wsDir sln
+    Tools.MsBuild.Build cmd.Clean cmd.Config wsDir sln

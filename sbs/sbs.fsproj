@@ -73,11 +73,11 @@
     <Compile Include="Helpers\Exec.fs" />
     <Compile Include="Helpers\Console.fs" />
     <Compile Include="Helpers\Collections.fs" />
+    <Compile Include="Helpers\PatternMatching.fs" />
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
-    <Compile Include="Core\PatternMatching.fs" />
-    <Compile Include="Core\MsBuild.fs" />
-    <Compile Include="Core\Git.fs" />
+    <Compile Include="Tools\MsBuild.fs" />
+    <Compile Include="Tools\Git.fs" />
     <Compile Include="CLI\Commands.fs" />
     <Compile Include="CLI\CommandLine.fs" />
     <Compile Include="Commands\Sources.fs" />

@@ -1,4 +1,4 @@
-﻿module Core.MsBuild
+﻿module Tools.MsBuild
 open System.IO
 open Helpers.Collections
 

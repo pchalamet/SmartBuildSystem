@@ -1,4 +1,4 @@
-﻿module Core.Git
+﻿module Tools.Git
 open System.IO
 open Helpers.Fs
 open Helpers.Exec
