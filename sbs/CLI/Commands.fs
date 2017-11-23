@@ -11,7 +11,11 @@ type CloneRepository =
 type CheckoutRepositories =
     { Branch : string }
 
-type BuildRepository =
+type CreateView =
+    {  Name : string
+       Patterns : string list }
+
+type BuildView =
     { Name : string 
       Config : string
       Clean : bool }
@@ -22,6 +26,7 @@ type MainCommand =
     | Init
     | Clone
     | Checkout
+    | View
     | Build
     | Unknown
 
@@ -32,5 +37,6 @@ type Command =
     | Init of InitWorkspace
     | Clone of CloneRepository
     | Checkout of CheckoutRepositories
-    | Build of BuildRepository
+    | View of CreateView
+    | Build of BuildView
     | Error of MainCommand

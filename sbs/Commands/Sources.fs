@@ -32,20 +32,3 @@ let Checkout (info : CLI.Commands.CheckoutRepositories) =
     for (repo,res) in allres do
         if res.Code <> 0 then Helpers.Console.PrintError repo.Name
         else Helpers.Console.PrintSuccess repo.Name
-
-let Build (info : CLI.Commands.BuildRepository) =
-    let wsDir = Env.WorkspaceDir()
-    let config = wsDir |> Configuration.Master.Load
-
-    let repo = match config.Repositories |> Seq.tryFind (fun x -> x.Name = info.Name) with
-               | Some x -> x
-               | None -> failwithf "Repository %A does not exist" info.Name
-    let repoDir = wsDir |> GetDirectory repo.Name
-    if repoDir.Exists |> not then failwithf "Repository %A is not cloned" repo.Name
-    let slns = repoDir.EnumerateFiles("*.sln", System.IO.SearchOption.AllDirectories)
-
-    let buildRepo (x : System.IO.FileInfo) = 
-        Helpers.Console.PrintInfo (sprintf "Building solution %A" x.Name)
-        Core.MsBuild.Build info.Clean info.Config wsDir x
-
-    slns |> Seq.iter buildRepo

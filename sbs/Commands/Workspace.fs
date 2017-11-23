@@ -1,5 +1,6 @@
-﻿module Commands.Init
+﻿module Commands.Workspace
 open System.IO
+open Helpers
 
 let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     let wsDir = cmd.Path |> DirectoryInfo
@@ -22,3 +23,20 @@ let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
         cloneRepo |> Commands.Sources.Clone
     finally
         System.Environment.CurrentDirectory <- currentDir
+
+let CreateView (cmd : CLI.Commands.CreateView) =
+    let wsDir = Env.WorkspaceDir()
+    let config = wsDir |> Configuration.Master.Load
+
+
+
+    
+let Build (cmd : CLI.Commands.BuildView) =
+    let wsDir = Env.WorkspaceDir()
+
+    let slnFileName = sprintf "%s.sln" cmd.Name
+    let sln = wsDir |> Fs.GetFile slnFileName
+    if sln.Exists |> not then failwithf "View %A does not exist" cmd.Name
+
+    sprintf "Building view %A" cmd.Name |> Helpers.Console.PrintInfo
+    Core.MsBuild.Build cmd.Clean cmd.Config wsDir sln

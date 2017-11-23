@@ -5,10 +5,11 @@ open CLI.Commands
 let processMain argv =
     let cmd = CLI.CommandLine.Parse (argv |> Seq.toList)
     match cmd with
-    | Command.Init info -> Commands.Init.InitWorkspace info
+    | Command.Init info -> Commands.Workspace.InitWorkspace info
     | Command.Clone info -> Commands.Sources.Clone info
     | Command.Checkout info -> Commands.Sources.Checkout info
-    | Command.Build info -> Commands.Sources.Build info
+    | Command.View info -> Commands.Workspace.CreateView info
+    | Command.Build info -> Commands.Workspace.Build info
     | Command.Usage -> Commands.Help.PrintUsage MainCommand.Unknown
     | Command.Error info -> Commands.Help.PrintUsage info
     | Command.Version -> Commands.Help.PrintVersion ()

@@ -6,9 +6,10 @@ let private UsageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
         [MainCommand.Init], "init <folder> : initialize workspace"
-        [MainCommand.Clone], "clone [--no-dep] [--shallow] <repository> : clone a repository"
+        [MainCommand.Clone], "clone [--no-dep] [--shallow] <repository...> : clone repositories using wildcards"
+        [MainCommand.View], "view <name> <repository...> : create a solution with select repositories"
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
-        [MainCommand.Build], "build [--debug] <repository> : build a repository" 
+        [MainCommand.Build], "build [--debug] <view> : build a repository" 
         [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" ]
     content
 

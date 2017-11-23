@@ -24,6 +24,7 @@ type private Token =
     | Usage
     | Init
     | Clone
+    | View
     | Build
     | Rebuild
     | Checkout
@@ -34,6 +35,7 @@ let private (|Token|_|) (token : string) =
     | "usage" -> Some Token.Usage
     | "init" -> Some Token.Init
     | "clone" -> Some Token.Clone
+    | "view" -> Some Token.View
     | "build" -> Some Token.Build
     | "rebuild" -> Some Token.Rebuild
     | "checkout" -> Some Token.Checkout
@@ -75,6 +77,11 @@ let private commandCheckout (args : string list) =
     | [Param branch] -> Command.Checkout { Branch = branch }
     | _ -> Command.Error MainCommand.Checkout
 
+let rec commandView (args : string list) =
+    match args with
+    | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns }
+    | _ -> Command.Error MainCommand.View
+
 let rec private commandBuild (clean : bool) (config : string) (args : string list) =
     match args with
     | TokenOption TokenOption.Debug :: tail -> tail |> commandBuild clean "Debug" 
@@ -89,6 +96,7 @@ let Parse (args : string list) : Command =
     | Token Token.Usage :: cmdArgs -> cmdArgs |> commandUsage
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false true
+    | Token Token.View :: cmdArgs -> cmdArgs |> commandView
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout

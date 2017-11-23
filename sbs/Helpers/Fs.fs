@@ -12,7 +12,7 @@ let GetFile (fileName : string) (dir : DirectoryInfo) : FileInfo =
     FileInfo (fullFileName)
 
 let EnsureExists (dir : DirectoryInfo) =
-    if not dir.Exists then dir.Create()
+    if dir.Exists |> not then dir.Create()
     dir
 
 let Exists (dir : DirectoryInfo) =
