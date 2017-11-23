@@ -6,8 +6,7 @@ type InitWorkspace =
 type CloneRepository =
     { Name : string
       Shallow : bool
-      Dependencies : bool
-      References : bool }
+      Dependencies : bool }
 
 type CheckoutRepositories =
     { Branch : string }
