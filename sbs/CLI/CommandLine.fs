@@ -8,14 +8,13 @@ open Helpers.Collections
 
 
 type private TokenOption =
-    | Deps
-    | Refs
+    | NoDeps
     | Shallow
     | Debug
     
 let private (|TokenOption|_|) (token : string) =
     match token with
-    | "--deps" -> Some TokenOption.Deps
+    | "--no-dep" -> Some TokenOption.NoDeps
     | "--shallow" -> Some TokenOption.Shallow
     | "--debug" -> Some TokenOption.Debug
     | _ -> None
@@ -66,7 +65,7 @@ let private commandInit (args : string list) =
 let rec private commandClone (shallow : bool) (deps : bool) (args : string list) =
     match args with
     | TokenOption TokenOption.Shallow :: tail -> tail |> commandClone true deps
-    | TokenOption TokenOption.Deps :: tail -> tail |> commandClone shallow true
+    | TokenOption TokenOption.NoDeps :: tail -> tail |> commandClone shallow false
     | [] -> Command.Error MainCommand.Clone
     | Params patterns -> Command.Clone { Patterns = patterns; Shallow = shallow; Dependencies = deps }
     | _ -> Command.Error MainCommand.Clone
@@ -89,7 +88,7 @@ let Parse (args : string list) : Command =
     | [Token Token.Version] -> Command.Version
     | Token Token.Usage :: cmdArgs -> cmdArgs |> commandUsage
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
-    | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false false
+    | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false true
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
