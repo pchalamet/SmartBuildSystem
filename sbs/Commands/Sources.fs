@@ -4,7 +4,7 @@ open Helpers.Fs
 
 let rec private CloneRepository wsDir (config : Configuration.Master.Configuration) (info : CLI.Commands.CloneRepository) =
     // clone repository if necessary
-    let repos = PatternMatching.FilterMatch (config.Repositories) (fun x -> x.Name) (info.Patterns |> Set)
+    let repos = Core.PatternMatching.FilterMatch (config.Repositories) (fun x -> x.Name) (info.Patterns |> Set)
     for repo in repos do
         let repoDir = wsDir |> Fs.GetDirectory repo.Name
         if repoDir.Exists |> not then

@@ -1,4 +1,4 @@
-﻿module Helpers.PatternMatching
+﻿module Core.PatternMatching
 open Helpers.Collections
 
 let private (|MatchZeroOrMore|_|) c =

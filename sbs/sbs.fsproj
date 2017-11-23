@@ -32,6 +32,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
+    <StartArguments>view common common</StartArguments>
+    <StartWorkingDirectory>D:\src\Build\toto\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -71,14 +73,13 @@
     <Compile Include="Helpers\Exec.fs" />
     <Compile Include="Helpers\Console.fs" />
     <Compile Include="Helpers\Collections.fs" />
-    <Compile Include="Helpers\PatternMatching.fs" />
-    <Compile Include="CLI\Commands.fs" />
-    <Compile Include="CLI\CommandLine.fs" />
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
-    <Compile Include="Core\Algorithm.fs" />
+    <Compile Include="Core\PatternMatching.fs" />
     <Compile Include="Core\MsBuild.fs" />
     <Compile Include="Core\Git.fs" />
+    <Compile Include="CLI\Commands.fs" />
+    <Compile Include="CLI\CommandLine.fs" />
     <Compile Include="Commands\Sources.fs" />
     <Compile Include="Commands\Workspace.fs" />
     <Compile Include="Commands\Help.fs" />

@@ -29,3 +29,13 @@ let memoize (f: 'a -> 'b) : 'a -> 'b =
     let cache = System.Collections.Concurrent.ConcurrentDictionary<'a, 'b>()
     fun (x: 'a) ->
         cache.GetOrAdd(x, f)
+
+let GenerateGuidFromString (input : string) =
+    use provider = new System.Security.Cryptography.MD5CryptoServiceProvider()
+    let inputBytes = System.Text.Encoding.GetEncoding(0).GetBytes(input)
+    let hashBytes = provider.ComputeHash(inputBytes)
+    let hashGuid = System.Guid(hashBytes)
+    hashGuid
+
+let ToVSGuid (guid : System.Guid) =
+    guid.ToString("D").ToUpperInvariant()

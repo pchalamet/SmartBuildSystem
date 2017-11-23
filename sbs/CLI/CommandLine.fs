@@ -77,9 +77,10 @@ let private commandCheckout (args : string list) =
     | [Param branch] -> Command.Checkout { Branch = branch }
     | _ -> Command.Error MainCommand.Checkout
 
-let rec commandView (args : string list) =
+let rec commandView (deps : bool) (args : string list) =
     match args with
-    | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns }
+    | TokenOption TokenOption.NoDeps :: tail -> tail |> commandView false
+    | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
     | _ -> Command.Error MainCommand.View
 
 let rec private commandBuild (clean : bool) (config : string) (args : string list) =
@@ -96,7 +97,7 @@ let Parse (args : string list) : Command =
     | Token Token.Usage :: cmdArgs -> cmdArgs |> commandUsage
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false true
-    | Token Token.View :: cmdArgs -> cmdArgs |> commandView
+    | Token Token.View :: cmdArgs -> cmdArgs |> commandView true
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout

@@ -13,7 +13,8 @@ type CheckoutRepositories =
 
 type CreateView =
     {  Name : string
-       Patterns : string list }
+       Patterns : string list 
+       Dependencies : bool }
 
 type BuildView =
     { Name : string 
