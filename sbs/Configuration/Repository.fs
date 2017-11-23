@@ -23,11 +23,12 @@ let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Conf
                | Some x -> x
                | None -> failwithf "Repository %A does not exist" repoName
 
-    // Load configuration
-    let config = RepositoryConfig()
-    let content = wsDir |> GetDirectory repo.Name
-                        |> GetFile "build.yaml"
-                        |> ReadAllText
-    content |> config.LoadText
-    config |> convert masterConfig
-
+    let repoConfig = wsDir |> GetDirectory repo.Name
+                           |> GetFile "repository.yaml"
+    if repoConfig.Exists |> not then { Configuration.Dependencies = Set.empty }
+    else
+        // Load configuration
+        let config = RepositoryConfig()
+        repoConfig |> ReadAllText
+                   |> config.LoadText
+        config |> convert masterConfig
