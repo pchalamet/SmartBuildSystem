@@ -68,7 +68,7 @@ let rec private commandClone (shallow : bool) (deps : bool) (args : string list)
     | TokenOption TokenOption.Shallow :: tail -> tail |> commandClone true deps
     | TokenOption TokenOption.Deps :: tail -> tail |> commandClone shallow true
     | [] -> Command.Error MainCommand.Clone
-    | [Param name] -> Command.Clone { Name = name; Shallow = shallow; Dependencies = deps }
+    | Params patterns -> Command.Clone { Patterns = patterns; Shallow = shallow; Dependencies = deps }
     | _ -> Command.Error MainCommand.Clone
 
 let private commandCheckout (args : string list) =

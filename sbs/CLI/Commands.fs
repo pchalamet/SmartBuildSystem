@@ -4,7 +4,7 @@ type InitWorkspace =
     { Path : string }
 
 type CloneRepository =
-    { Name : string
+    { Patterns : string list
       Shallow : bool
       Dependencies : bool }
 

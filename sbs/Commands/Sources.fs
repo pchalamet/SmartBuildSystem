@@ -2,24 +2,26 @@
 open Helpers
 open Helpers.Fs
 
-let rec Clone (info : CLI.Commands.CloneRepository) =
+let rec private CloneRepository wsDir (config : Configuration.Master.Configuration) (info : CLI.Commands.CloneRepository) =
+    // clone repository if necessary
+    let repos = PatternMatching.FilterMatch (config.Repositories) (fun x -> x.Name) (info.Patterns |> Set)
+    for repo in repos do
+        let repoDir = wsDir |> Fs.GetDirectory repo.Name
+        if repoDir.Exists |> not then
+            Helpers.Console.PrintInfo (sprintf "Cloning repository %A" repo.Name) 
+            Core.Git.Clone repo wsDir info.Shallow |> Helpers.IO.CheckResponseCode
+
+        // clone dependencies
+        if info.Dependencies then
+            let repoConfig = Configuration.Repository.Load wsDir repo.Name config
+            repoConfig.Dependencies |> Seq.map (fun x -> { info with CLI.Commands.Patterns = [x.Name]})
+                                    |> Seq.iter (CloneRepository wsDir config)
+
+let Clone (info : CLI.Commands.CloneRepository) =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
+    CloneRepository wsDir config info
 
-    // clone repository if necessary
-    let repo = match config.Repositories |> Seq.tryFind (fun x -> x.Name = info.Name) with
-               | Some x -> x
-               | None -> failwithf "Repository %A does not exist" info.Name
-    let repoDir = wsDir |> Fs.GetDirectory repo.Name
-    if repoDir.Exists |> not then
-        Helpers.Console.PrintInfo (sprintf "Cloning repository %A" repo.Name) 
-        Core.Git.Clone repo wsDir info.Shallow |> Helpers.IO.CheckResponseCode
-
-    // clone dependencies
-    if info.Dependencies then
-        let repoConfig = Configuration.Repository.Load wsDir repo.Name config
-        repoConfig.Dependencies |> Seq.map (fun x -> { info with CLI.Commands.CloneRepository.Name = x.Name})
-                                |> Seq.iter Clone
 
 let Checkout (info : CLI.Commands.CheckoutRepositories) =
     let wsDir = Env.WorkspaceDir()

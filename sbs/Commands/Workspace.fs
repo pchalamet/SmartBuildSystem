@@ -16,7 +16,7 @@ let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
         System.Environment.CurrentDirectory <- wsDir.FullName
 
         // delegate to clone then to get dependencies
-        let cloneRepo = { CLI.Commands.CloneRepository.Name = masterRepo.Name
+        let cloneRepo = { CLI.Commands.CloneRepository.Patterns = [masterRepo.Name]
                           CLI.Commands.CloneRepository.Shallow = false
                           CLI.Commands.CloneRepository.Dependencies = true }
         cloneRepo |> Commands.Sources.Clone
