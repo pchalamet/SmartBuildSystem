@@ -57,16 +57,29 @@ let private projectToProjectType (file : FileInfo) =
 
 
 
-let private generateSolutionContent (projects : FileInfo list) =
+let private generateSolutionContent (wsDir : string) (projects : FileInfo list) =
+    let extractRepository (file : string) =
+        let partial = file.Substring(wsDir.Length+1)
+        let idx = partial.IndexOf(System.IO.Path.DirectorySeparatorChar)
+        partial.Substring(0, idx)
+
     seq {
         yield "Microsoft Visual Studio Solution File, Format Version 12.00"
         yield "# Visual Studio 14"
 
         let guids = projects 
                         |> List.map (fun x -> x.FullName, x.FullName 
-                                                            |> Helpers.Collections.GenerateGuidFromString 
-                                                            |> Helpers.Collections.ToVSGuid)
+                                                            |> Helpers.Text.GenerateGuidFromString 
+                                                            |> Helpers.Text.ToVSGuid)
                         |> Map
+
+        let repos = projects
+                        |> List.map (fun x -> x.FullName, x.FullName |> extractRepository)
+                        |> Map
+
+        let repoGuids = repos
+                            |> Seq.map (fun kvp -> kvp.Value, kvp.Value |> Helpers.Text.GenerateGuidFromString |> Helpers.Text.ToVSGuid)
+                            |> Map
 
         for project in projects do
             let fileName = project.FullName
@@ -75,6 +88,13 @@ let private generateSolutionContent (projects : FileInfo list) =
                   (fileName |> Path.GetFileNameWithoutExtension)
                   fileName
                   (guids.[fileName])
+            yield "EndProject"
+
+        for repository in repoGuids do
+            let repo = repository.Key
+            let guid = repository.Value
+
+            yield sprintf @"Project(""{2150E333-8FDC-42A3-9474-1A3956D46DE8}"") = %A, %A, ""{%s}""" repo repo guid
             yield "EndProject"
 
         yield "Global"
@@ -93,14 +113,23 @@ let private generateSolutionContent (projects : FileInfo list) =
 
         yield "\tEndGlobalSection"
 
+        yield "\tGlobalSection(NestedProjects) = preSolution"
+        for project in projects do
+            let projectFileName = project.FullName
+            let projectGuid = guids.[projectFileName]
+            let repoFileName = repos.[projectFileName]
+            let repoGuid = repoGuids.[repoFileName]
+            yield sprintf "\t\t{%s} = {%s}" projectGuid repoGuid
+        yield "\tEndGlobalSection"
+
         yield "EndGlobal"
     }
 
 
 
 
-let private generateSolution wsDir name (projects : FileInfo list) =
-    let content = generateSolutionContent projects
+let private generateSolution (wsDir : DirectoryInfo) name (projects : FileInfo list) =
+    let content = generateSolutionContent (wsDir.FullName) projects
     let slnFileName = sprintf "%s.sln" name
     let sln = wsDir |> Fs.GetFile slnFileName
     File.WriteAllLines(sln.FullName, content)
@@ -110,7 +139,7 @@ let CreateView (cmd : CLI.Commands.CreateView) =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
 
-    let selectedRepos = Helpers.PatternMatching.FilterMatch (config.Repositories) (fun x -> x.Name) (cmd.Patterns |> Set)
+    let selectedRepos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) (cmd.Patterns |> Set)
     let repos = if cmd.Dependencies then gatherDependencies wsDir config selectedRepos
                 else selectedRepos
     let projects = repos |> Seq.fold (fun s t -> s @ (gatherProjects wsDir t)) List.empty

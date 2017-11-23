@@ -1,4 +1,4 @@
-﻿module Helpers.PatternMatching
+﻿module Helpers.Text
 open Helpers.Collections
 
 let private (|MatchZeroOrMore|_|) c =
@@ -35,3 +35,14 @@ let FilterMatch<'T when 'T : comparison> (items : 'T set) (strOf : 'T -> string)
                           |> Set.map matchItems
                           |> Set.unionMany
     matches
+
+
+let GenerateGuidFromString (input : string) =
+    use provider = new System.Security.Cryptography.MD5CryptoServiceProvider()
+    let inputBytes = System.Text.Encoding.GetEncoding(0).GetBytes(input)
+    let hashBytes = provider.ComputeHash(inputBytes)
+    let hashGuid = System.Guid(hashBytes)
+    hashGuid
+
+let ToVSGuid (guid : System.Guid) =
+    guid.ToString("D").ToUpperInvariant()

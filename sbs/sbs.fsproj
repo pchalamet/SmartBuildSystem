@@ -73,7 +73,7 @@
     <Compile Include="Helpers\Exec.fs" />
     <Compile Include="Helpers\Console.fs" />
     <Compile Include="Helpers\Collections.fs" />
-    <Compile Include="Helpers\PatternMatching.fs" />
+    <Compile Include="Helpers\Text.fs" />
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
     <Compile Include="Tools\MsBuild.fs" />
