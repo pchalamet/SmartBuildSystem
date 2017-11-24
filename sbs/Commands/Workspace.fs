@@ -33,53 +33,48 @@ let rec private gatherDependencies wsDir (config : Configuration.Master.Configur
         let repoConfig = Configuration.Repository.Load wsDir repo.Name config
         repoConfig.Dependencies
 
-    // gather all new dependencies first
     let repoToGather = closure |> Set.fold (fun s t -> s + (getDependencies t)) closure
     if repoToGather <> closure then gatherDependencies wsDir config repoToGather
     else closure
+
+
+let ext2projType = Map [ (".csproj", "fae04ec0-301f-11d3-bf4b-00c04f79efbc")
+                         (".fsproj", "f2a71f9b-5d33-465a-a702-920d77279786")
+                         (".vbproj", "f184b08f-c81c-45f6-a57f-5abd9991f28f") 
+                         (".pssproj", "f5034706-568f-408a-b7b3-4d38c6db8a32")
+                         (".sqlproj", "00D1A9C2-B5F0-4AF3-8072-F6C62B433612")]
     
 let private gatherProjects wsDir (repo : Configuration.Master.Repository) =
     let repoDir = wsDir |> GetDirectory repo.Name
-    repoDir.EnumerateFiles("*.csproj", SearchOption.AllDirectories) |> List.ofSeq
-
-
-
-
+    let enumerateExtensions ext = repoDir.EnumerateFiles("*" + ext, SearchOption.AllDirectories)
+    ext2projType |> Seq.map (fun kvp -> kvp.Key)
+                 |> Seq.fold (fun s t -> Seq.append s (enumerateExtensions t)) Seq.empty
 
 let private projectToProjectType (file : FileInfo) =
-    let ext2projType = Map [ (".csproj", "fae04ec0-301f-11d3-bf4b-00c04f79efbc")
-                             (".fsproj", "f2a71f9b-5d33-465a-a702-920d77279786")
-                             (".vbproj", "f184b08f-c81c-45f6-a57f-5abd9991f28f") 
-                             (".pssproj", "f5034706-568f-408a-b7b3-4d38c6db8a32")
-                             (".sqlproj", "00D1A9C2-B5F0-4AF3-8072-F6C62B433612")]
     let prjType = ext2projType.[file.Extension]
     prjType
 
-
-
-let private generateSolutionContent (wsDir : string) (projects : FileInfo list) =
+let private generateSolutionContent (wsDir : string) (projects : FileInfo seq) =
     let extractRepository (file : string) =
         let partial = file.Substring(wsDir.Length+1)
         let idx = partial.IndexOf(System.IO.Path.DirectorySeparatorChar)
         partial.Substring(0, idx)
 
+    let string2guid s = s |> Helpers.Text.GenerateGuidFromString 
+                          |> Helpers.Text.ToVSGuid
+
+    let guids = projects |> Seq.map (fun x -> x.FullName, string2guid x.FullName)
+                         |> Map
+
+    let repos = projects |> Seq.map (fun x -> x.FullName, extractRepository x.FullName)
+                         |> Map
+
+    let repoGuids = repos |> Seq.map (fun kvp -> kvp.Value, string2guid kvp.Value)
+                          |> Map
+
     seq {
         yield "Microsoft Visual Studio Solution File, Format Version 12.00"
         yield "# Visual Studio 14"
-
-        let guids = projects 
-                        |> List.map (fun x -> x.FullName, x.FullName 
-                                                            |> Helpers.Text.GenerateGuidFromString 
-                                                            |> Helpers.Text.ToVSGuid)
-                        |> Map
-
-        let repos = projects
-                        |> List.map (fun x -> x.FullName, x.FullName |> extractRepository)
-                        |> Map
-
-        let repoGuids = repos
-                            |> Seq.map (fun kvp -> kvp.Value, kvp.Value |> Helpers.Text.GenerateGuidFromString |> Helpers.Text.ToVSGuid)
-                            |> Map
 
         for project in projects do
             let fileName = project.FullName
@@ -128,7 +123,7 @@ let private generateSolutionContent (wsDir : string) (projects : FileInfo list) 
 
 
 
-let private generateSolution (wsDir : DirectoryInfo) name (projects : FileInfo list) =
+let private generateSolution (wsDir : DirectoryInfo) name (projects : FileInfo seq) =
     let content = generateSolutionContent (wsDir.FullName) projects
     let slnFileName = sprintf "%s.sln" name
     let sln = wsDir |> Fs.GetFile slnFileName
@@ -142,7 +137,7 @@ let CreateView (cmd : CLI.Commands.CreateView) =
     let selectedRepos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) (cmd.Patterns |> Set)
     let repos = if cmd.Dependencies then gatherDependencies wsDir config selectedRepos
                 else selectedRepos
-    let projects = repos |> Seq.fold (fun s t -> s @ (gatherProjects wsDir t)) List.empty
+    let projects = repos |> Seq.fold (fun s t -> Seq.append s (gatherProjects wsDir t)) Seq.empty
     generateSolution wsDir cmd.Name projects
 
     
