@@ -3,7 +3,7 @@ open System.IO
 open Helpers.Collections
 
 let Build (clean : bool) (config : string) (wsDir : DirectoryInfo) (slnFile : FileInfo) =
-    let target = clean ? ("Clean,Build", "Build")
+    let target = clean ? ("Clean,Restore,Build", "Restore,Build")
     let argMt = "/m"
 
     let argConfig = sprintf "/p:Configuration=%s" config
