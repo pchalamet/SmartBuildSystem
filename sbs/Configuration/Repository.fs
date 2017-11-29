@@ -14,7 +14,7 @@ type private RepositoryConfig = FSharp.Configuration.YamlConfig<"Examples/Reposi
 let private convert (masterConfig : Master.Configuration) (from : RepositoryConfig) =
     let repoMap = masterConfig.Repositories |> Seq.map (fun x -> x.Name, x) 
                                             |> Map
-    { Configuration.Dependencies = from.repositories |> Seq.map (fun x -> repoMap.[x]) |> set }
+    { Configuration.Dependencies = from.dependencies |> Seq.map (fun x -> repoMap.[x]) |> set }
 
 
 let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Configuration) =

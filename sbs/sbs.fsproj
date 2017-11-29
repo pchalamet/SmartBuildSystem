@@ -32,8 +32,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>build common</StartArguments>
-    <StartWorkingDirectory>D:\src\Build\toto\</StartWorkingDirectory>
+    <StartArguments>init toto</StartArguments>
+    <StartWorkingDirectory>D:\src\Build\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

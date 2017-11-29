@@ -26,8 +26,7 @@ let private convert (from : MasterConfig) =
 
 let Load (wsDir : DirectoryInfo) =
     let config = MasterConfig()
-    let content = wsDir |> GetDirectory ".sbs"
-                        |> GetFile "master.yaml"
+    let content = wsDir |> GetFile "sbs.yaml"
                         |> ReadAllText
     content |> config.LoadText
     config |> convert

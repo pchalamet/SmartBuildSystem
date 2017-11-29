@@ -1,3 +1,4 @@
-﻿repositories:
+﻿auto-dependencies: false
+dependencies:
   - toto
   - tutu

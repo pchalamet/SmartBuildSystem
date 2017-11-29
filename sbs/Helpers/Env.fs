@@ -28,8 +28,8 @@ let MasterRepository () =
 
 
 let IsWorkspaceFolder(wsDir : DirectoryInfo) =
-    let subDir = wsDir |> Helpers.Fs.GetDirectory ".sbs"
-    subDir.Exists
+    let masterConfig = wsDir |> Helpers.Fs.GetFile "sbs.yaml"
+    masterConfig.Exists
 
 let rec private workspaceFolderSearch (dir : DirectoryInfo) =
     if dir = null || not dir.Exists then failwith "Can't find workspace root directory. Check you are in a workspace."

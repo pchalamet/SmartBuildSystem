@@ -7,9 +7,10 @@ open Helpers.Fs
 let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     let wsDir = cmd.Path |> DirectoryInfo
     if wsDir.Exists then failwithf "Workspace already exists"
+    wsDir |> EnsureExists |> ignore
 
     // first clone master repository
-    let masterRepo = { Configuration.Master.Repository.Name = ".sbs"
+    let masterRepo = { Configuration.Master.Repository.Name = ""
                        Configuration.Master.Repository.Uri = Helpers.Env.MasterRepository () }
     Tools.Git.Clone masterRepo wsDir false
         |> Helpers.IO.CheckResponseCode
