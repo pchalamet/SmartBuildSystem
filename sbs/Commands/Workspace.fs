@@ -3,10 +3,14 @@ open System.IO
 open Helpers
 open Helpers.Collections
 open Helpers.Fs
+open System.Linq
 
 let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     let wsDir = cmd.Path |> DirectoryInfo
-    if wsDir.Exists then failwithf "Workspace already exists"
+    let isWorkspaceNotEmpty = wsDir.Exists 
+                              && wsDir.EnumerateFiles().Count() > 0 
+                              && wsDir.EnumerateDirectories().Count() > 0
+    if isWorkspaceNotEmpty then failwithf "Workspace already exists"
     wsDir |> EnsureExists |> ignore
 
     // first clone master repository
