@@ -22,6 +22,11 @@ let processMain argv =
 
 let tryMain verbose argv =
     try
+        let wsDir = Helpers.Env.WorkspaceDir()
+        let masterConfig = Configuration.Master.Load wsDir
+        let config = Configuration.Repository.Load wsDir "smartadlibrary" masterConfig
+        printfn "%A" config
+
         processMain argv
     with
         x -> let err = if verbose |> not then sprintf "Error:\n%s" x.Message

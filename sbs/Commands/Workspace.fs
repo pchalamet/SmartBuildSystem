@@ -33,11 +33,12 @@ let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
 
 
 let rec private gatherDependencies wsDir (config : Configuration.Master.Configuration) (closure : Configuration.Master.Repository set) =
-    let getDependencies (repo : Configuration.Master.Repository) =
-        let repoConfig = Configuration.Repository.Load wsDir repo.Name config
-        repoConfig.Dependencies
+    let getDependencies (repo : Configuration.Master.Repository) (state : Configuration.Master.Repository set) =
+        let newDependencies = let repoConfig = Configuration.Repository.Load wsDir repo.Name config
+                              repoConfig.Dependencies
+        state + newDependencies
 
-    let repoToGather = closure |> Set.fold (fun s t -> s + (getDependencies t)) closure
+    let repoToGather = closure |> Set.fold (fun s t -> getDependencies t s) closure
     if repoToGather <> closure then gatherDependencies wsDir config repoToGather
     else closure
 
