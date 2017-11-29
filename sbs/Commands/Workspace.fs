@@ -8,8 +8,7 @@ open System.Linq
 let InitWorkspace (cmd : CLI.Commands.InitWorkspace) =
     let wsDir = cmd.Path |> DirectoryInfo
     let isWorkspaceNotEmpty = wsDir.Exists 
-                              && wsDir.EnumerateFiles().Count() > 0 
-                              && wsDir.EnumerateDirectories().Count() > 0
+                              && (wsDir.EnumerateFiles().Count() > 0 || wsDir.EnumerateDirectories().Count() > 0)
     if isWorkspaceNotEmpty then failwithf "Workspace already exists"
     wsDir |> EnsureExists |> ignore
 
