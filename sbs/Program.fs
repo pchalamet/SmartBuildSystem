@@ -11,6 +11,7 @@ let processMain argv =
     | Command.View info -> Commands.Workspace.CreateView info
     | Command.Build info -> Commands.Workspace.Build info
     | Command.Usage -> Commands.Help.PrintUsage MainCommand.Unknown
+    | Command.Exec info -> Commands.Workspace.Exec info
     | Command.Error info -> Commands.Help.PrintUsage info
     | Command.Version -> Commands.Help.PrintVersion ()
 

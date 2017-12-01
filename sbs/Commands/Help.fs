@@ -10,7 +10,8 @@ let private UsageContent() =
         [MainCommand.View], "view <name> <repository...> : create a solution with select repositories"
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
         [MainCommand.Build], "build [--debug] <view> : build a repository" 
-        [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" ]
+        [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" 
+        [MainCommand.Exec], "exec <cmd> :  execute command for each repository (variables: SBS_NAME, SBS_PATH, SBS_URL, SBS_WKS)"]
     content
 
 

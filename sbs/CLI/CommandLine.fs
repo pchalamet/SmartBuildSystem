@@ -28,6 +28,7 @@ type private Token =
     | Build
     | Rebuild
     | Checkout
+    | Exec
 
 let private (|Token|_|) (token : string) =
     match token with
@@ -39,6 +40,7 @@ let private (|Token|_|) (token : string) =
     | "build" -> Some Token.Build
     | "rebuild" -> Some Token.Rebuild
     | "checkout" -> Some Token.Checkout
+    | "exec" -> Some Token.Exec
     | _ -> None
 
 
@@ -91,6 +93,12 @@ let rec private commandBuild (clean : bool) (config : string) (args : string lis
                                       Config = config }
     | _ -> Command.Error MainCommand.Build
 
+let private commandExec (args : string list) =
+    match args with
+    | [Param cmd] -> Command.Exec { Command = cmd }
+    | _ -> Command.Error MainCommand.Exec
+
+
 let Parse (args : string list) : Command =
     match args with
     | [Token Token.Version] -> Command.Version
@@ -101,6 +109,7 @@ let Parse (args : string list) : Command =
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
+    | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | _ -> Command.Error MainCommand.Usage
 
 

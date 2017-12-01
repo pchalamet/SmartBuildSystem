@@ -155,3 +155,22 @@ let Build (cmd : CLI.Commands.BuildView) =
 
     sprintf "Building view %A" cmd.Name |> Helpers.Console.PrintInfo
     Tools.MsBuild.Build cmd.Clean cmd.Config wsDir sln
+
+
+let Exec (cmd : CLI.Commands.ExecCommand) =
+    let wsDir = Env.WorkspaceDir()
+    let config = Configuration.Master.Load wsDir
+    for repo in config.Repositories do
+        let repoDir = wsDir |> GetDirectory repo.Name
+        if repoDir.Exists then
+            let vars = [ "SBS_REPO_NAME", repo.Name
+                         "SBS_REPO_PATH", repoDir.FullName
+                         "SBS_REPO_URL", repo.Uri
+                         "SBS_WKS", wsDir.FullName ] |> Map.ofSeq
+            let args = sprintf @"/c ""%s""" cmd.Command
+
+            try
+                Console.PrintInfo repo.Name
+
+                Exec.Exec "cmd" args repoDir vars |> IO.CheckResponseCode
+            with e -> printfn "*** %s" e.Message

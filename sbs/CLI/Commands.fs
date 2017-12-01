@@ -21,6 +21,10 @@ type BuildView =
       Config : string
       Clean : bool }
 
+type ExecCommand =
+    { Command : string }
+
+
 [<RequireQualifiedAccess>]
 type MainCommand =
     | Usage
@@ -29,6 +33,7 @@ type MainCommand =
     | Checkout
     | View
     | Build
+    | Exec
     | Unknown
 
 [<RequireQualifiedAccess>]
@@ -40,4 +45,5 @@ type Command =
     | Checkout of CheckoutRepositories
     | View of CreateView
     | Build of BuildView
+    | Exec of ExecCommand
     | Error of MainCommand
