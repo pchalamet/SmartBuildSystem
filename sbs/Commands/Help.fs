@@ -2,7 +2,7 @@
 open CLI.Commands
 
 
-let private UsageContent() =
+let private usageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
         [MainCommand.Init], "init <folder> : initialize workspace"
@@ -15,21 +15,18 @@ let private UsageContent() =
     content
 
 
-
-let PrintUsage (what : MainCommand) =
-    let lines = UsageContent () |> List.filter (fun (cmd, _) -> cmd |> Seq.contains what || what = MainCommand.Unknown)
+let Usage (what : MainCommand) =
+    let lines = usageContent () |> List.filter (fun (cmd, _) -> cmd |> Seq.contains what || what = MainCommand.Unknown)
                                 |> List.map (fun (_, desc) -> desc)
-
     printfn "Usage:"
     lines |> Seq.iter (printfn "  %s")
 
 
-let private VersionContent() =
+let private versionContent() =
     let version = Helpers.Env.Version()
     let versionContent = sprintf "full-build %s" (version.ToString())
-
     [ versionContent ]
 
 
-let PrintVersion () =
-    VersionContent() |> List.iter (fun x -> printfn "%s" x)
+let Version () =
+    versionContent() |> List.iter (fun x -> printfn "%s" x)

@@ -2,7 +2,7 @@
 open Helpers
 open Helpers.Fs
 
-let rec private CloneRepository wsDir (config : Configuration.Master.Configuration) (info : CLI.Commands.CloneRepository) =
+let rec private cloneRepository wsDir (config : Configuration.Master.Configuration) (info : CLI.Commands.CloneRepository) =
     // clone repository if necessary
     let repos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) (info.Patterns |> Set)
     for repo in repos do
@@ -15,13 +15,12 @@ let rec private CloneRepository wsDir (config : Configuration.Master.Configurati
         if info.Dependencies then
             let repoConfig = Configuration.Repository.Load wsDir repo.Name config
             repoConfig.Dependencies |> Seq.map (fun x -> { info with CLI.Commands.Patterns = [x.Name]})
-                                    |> Seq.iter (CloneRepository wsDir config)
+                                    |> Seq.iter (cloneRepository wsDir config)
 
 let Clone (info : CLI.Commands.CloneRepository) =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
-    CloneRepository wsDir config info
-
+    cloneRepository wsDir config info
 
 let Checkout (info : CLI.Commands.CheckoutRepositories) =
     let wsDir = Env.WorkspaceDir()

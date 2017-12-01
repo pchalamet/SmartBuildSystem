@@ -5,15 +5,15 @@ open CLI.Commands
 let processMain argv =
     let cmd = CLI.CommandLine.Parse (argv |> Seq.toList)
     match cmd with
-    | Command.Init info -> Commands.Workspace.InitWorkspace info
+    | Command.Init info -> Commands.Workspace.Init info
     | Command.Clone info -> Commands.Sources.Clone info
     | Command.Checkout info -> Commands.Sources.Checkout info
-    | Command.View info -> Commands.Workspace.CreateView info
-    | Command.Build info -> Commands.Workspace.Build info
-    | Command.Usage -> Commands.Help.PrintUsage MainCommand.Unknown
+    | Command.View info -> Commands.View.Create info
+    | Command.Build info -> Commands.View.Build info
+    | Command.Usage -> Commands.Help.Usage MainCommand.Unknown
     | Command.Exec info -> Commands.Workspace.Exec info
-    | Command.Error info -> Commands.Help.PrintUsage info
-    | Command.Version -> Commands.Help.PrintVersion ()
+    | Command.Error info -> Commands.Help.Usage info
+    | Command.Version -> Commands.Help.Version ()
 
     let retCode = match cmd with
                   | Command.Error _ -> 5
