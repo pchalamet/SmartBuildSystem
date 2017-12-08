@@ -29,6 +29,7 @@ type private Token =
     | Rebuild
     | Checkout
     | Exec
+    | Open
 
 let private (|Token|_|) (token : string) =
     match token with
@@ -41,6 +42,7 @@ let private (|Token|_|) (token : string) =
     | "rebuild" -> Some Token.Rebuild
     | "checkout" -> Some Token.Checkout
     | "exec" -> Some Token.Exec
+    | "open" -> Some Token.Open
     | _ -> None
 
 
@@ -98,6 +100,11 @@ let private commandExec (args : string list) =
     | [Param cmd] -> Command.Exec { Command = cmd }
     | _ -> Command.Error MainCommand.Exec
 
+let private commandOpen (args : string list) =
+    match args with
+    | [Param name] -> Command.Open { Name = name }
+    | _ -> Command.Error MainCommand.Open
+
 
 let Parse (args : string list) : Command =
     match args with
@@ -110,6 +117,7 @@ let Parse (args : string list) : Command =
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
+    | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | _ -> Command.Error MainCommand.Usage
 
 

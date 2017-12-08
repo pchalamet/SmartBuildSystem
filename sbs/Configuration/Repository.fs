@@ -65,7 +65,7 @@ let private convert (masterConfig : Master.Configuration) (from : RepositoryConf
 
 
 let getConfig (repoConfig : FileInfo) =
-    if repoConfig.Exists |> not then (false, Seq.empty)
+    if repoConfig.Exists |> not then (true, Seq.empty)
     else 
         // Load configuration
         let config = RepositoryConfig()

@@ -119,7 +119,6 @@ let Create (cmd : CLI.Commands.CreateView) =
                 else selectedRepos
     let projects = repos |> Seq.fold (fun s t -> Seq.append s (gatherProjects wsDir t)) Seq.empty
     generateSolution wsDir cmd.Name projects
-
     
 let Build (cmd : CLI.Commands.BuildView) =
     let wsDir = Env.WorkspaceDir()
@@ -130,4 +129,13 @@ let Build (cmd : CLI.Commands.BuildView) =
 
     sprintf "Building view %A" cmd.Name |> Helpers.Console.PrintInfo
     Tools.MsBuild.Build cmd.Clean cmd.Config wsDir sln
+
+
+let Open (cmd : CLI.Commands.OpenView) =
+    let wsDir = Env.WorkspaceDir()
+    let slnFileName = sprintf "%s.sln" cmd.Name
+    let sln = wsDir |> Fs.GetFile slnFileName
+    if sln.Exists |> not then failwithf "View %A does not exist" cmd.Name
+    Exec.Spawn sln.FullName "" "open"
+    ()
 

@@ -21,6 +21,9 @@ type BuildView =
       Config : string
       Clean : bool }
 
+type OpenView =
+    { Name : string }
+
 type ExecCommand =
     { Command : string }
 
@@ -34,6 +37,7 @@ type MainCommand =
     | View
     | Build
     | Exec
+    | Open
     | Unknown
 
 [<RequireQualifiedAccess>]
@@ -47,3 +51,4 @@ type Command =
     | Build of BuildView
     | Exec of ExecCommand
     | Error of MainCommand
+    | Open of OpenView
