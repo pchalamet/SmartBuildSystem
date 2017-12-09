@@ -1,4 +1,3 @@
 ﻿auto-dependencies: false
 dependencies:
-  - toto
-  - tutu
+  - It looks like your 'dependencies' configuration shall be set to '[]'
