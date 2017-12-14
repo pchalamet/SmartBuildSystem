@@ -9,6 +9,7 @@ let private usageContent() =
         [MainCommand.Clone], "clone [--no-dep] [--shallow] <repository...> : clone repositories using wildcards"
         [MainCommand.View], "view <name> <repository...> : create a solution with select repositories"
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
+        [MainCommand.Fetch], "fetch : fetch all branches on all repositories"
         [MainCommand.Build], "build [--debug] <view> : build a repository" 
         [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" 
         [MainCommand.Open], "open <view> : open view with your favorite ide" 

@@ -27,7 +27,6 @@ type OpenView =
 type ExecCommand =
     { Command : string }
 
-
 [<RequireQualifiedAccess>]
 type MainCommand =
     | Usage
@@ -38,6 +37,7 @@ type MainCommand =
     | Build
     | Exec
     | Open
+    | Fetch
     | Unknown
 
 [<RequireQualifiedAccess>]
@@ -52,3 +52,4 @@ type Command =
     | Exec of ExecCommand
     | Error of MainCommand
     | Open of OpenView
+    | Fetch

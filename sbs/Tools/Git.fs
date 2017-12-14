@@ -15,3 +15,8 @@ let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (v
     let args = sprintf "checkout %A" version
     let targetDir = wsDir |> GetDirectory repo.Name
     Exec "git" args targetDir Map.empty
+
+let Fetch (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) =
+    let args = sprintf "fetch --all"
+    let targetDir = wsDir |> GetDirectory repo.Name
+    Exec "git" args targetDir Map.empty

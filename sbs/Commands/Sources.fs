@@ -31,3 +31,13 @@ let Checkout (info : CLI.Commands.CheckoutRepositories) =
     for (repo,res) in allres do
         if res.Code <> 0 then Helpers.Console.PrintError repo.Name
         else Helpers.Console.PrintSuccess repo.Name
+
+let Fetch () =
+    let wsDir = Env.WorkspaceDir()
+    let config = wsDir |> Configuration.Master.Load
+    let repos = config.Repositories
+    for repo in repos do
+        let repoDir = wsDir |> Fs.GetDirectory repo.Name
+        if repoDir.Exists then
+            Helpers.Console.PrintInfo (sprintf "Fetching repository %A" repo.Name) 
+            Tools.Git.Fetch repo wsDir |> Helpers.IO.CheckResponseCode

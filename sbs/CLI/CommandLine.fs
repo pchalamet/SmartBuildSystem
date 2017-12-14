@@ -30,6 +30,7 @@ type private Token =
     | Checkout
     | Exec
     | Open
+    | Fetch
 
 let private (|Token|_|) (token : string) =
     match token with
@@ -43,6 +44,7 @@ let private (|Token|_|) (token : string) =
     | "checkout" -> Some Token.Checkout
     | "exec" -> Some Token.Exec
     | "open" -> Some Token.Open
+    | "fetch" -> Some Token.Fetch
     | _ -> None
 
 
@@ -105,6 +107,10 @@ let private commandOpen (args : string list) =
     | [Param name] -> Command.Open { Name = name }
     | _ -> Command.Error MainCommand.Open
 
+let private commandFetch (args : string list) =
+    match args with
+    | [] -> Command.Fetch
+    | _ -> Command.Error MainCommand.Fetch
 
 let Parse (args : string list) : Command =
     match args with
@@ -118,6 +124,7 @@ let Parse (args : string list) : Command =
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
+    | Token Token.Fetch :: cmdArgs -> cmdArgs |> commandFetch
     | _ -> Command.Error MainCommand.Usage
 
 
