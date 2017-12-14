@@ -20,11 +20,9 @@ let Version () =
 
 
 
-type private AppConfig = FSharp.Configuration.AppSettings<"Examples/App.config">
 
 let MasterRepository () =
-    AppConfig.MasterRepo
-
+    System.Configuration.ConfigurationManager.AppSettings.["MasterRepo"]
 
 
 let IsWorkspaceFolder(wsDir : DirectoryInfo) =

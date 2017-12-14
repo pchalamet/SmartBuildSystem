@@ -12,7 +12,12 @@ type Configuration =
     { Dependencies : Master.Repository set }
 
 
-type private RepositoryConfig = FSharp.Configuration.YamlConfig<"Examples/Repository.yaml">
+
+type RepositoryConfiguration() = class
+    member val ``auto-dependencies`` : bool = true with get, set 
+    member val dependencies : string array = null with get, set
+end
+
 
 
 
@@ -56,22 +61,13 @@ let private scanDependencies (repoDir : DirectoryInfo) =
 
 
 
-let private convert (masterConfig : Master.Configuration) (from : RepositoryConfig) =
-    let repoMap = masterConfig.Repositories |> Seq.map (fun x -> x.Name, x) 
-                                            |> Map
-    { Configuration.Dependencies = from.dependencies |> Seq.map (fun x -> repoMap.[x]) |> set }
-
-
-
-
 let getConfig (repoConfig : FileInfo) =
     if repoConfig.Exists |> not then (true, Seq.empty)
     else 
-        // Load configuration
-        let config = RepositoryConfig()
-        repoConfig |> ReadAllText
-                   |> config.LoadText        
-        (config.``auto-dependencies``, config.dependencies |> seq)
+        use file = System.IO.File.OpenText(repoConfig.FullName)
+        let serializer = new SharpYaml.Serialization.Serializer()
+        let repoConfig = serializer.Deserialize<RepositoryConfiguration>(file)
+        (repoConfig.``auto-dependencies``, repoConfig.dependencies |> seq)
 
 
 let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Configuration) =

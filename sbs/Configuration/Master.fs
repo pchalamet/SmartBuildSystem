@@ -14,20 +14,25 @@ type Configuration =
 
 
 
+type RepositoryConfiguration() = class
+    member val name : string = null with get, set
+    member val uri : string = null with get, set
+end
 
-type private MasterConfig = FSharp.Configuration.YamlConfig<"Examples/Master.yaml">
+type MasterConfiguration() = class
+    member val repositories : RepositoryConfiguration array = null with get, set 
+end
 
-
-
-let private convert (from : MasterConfig) =
-    { Configuration.Repositories = from.repositories |> Seq.map (fun x -> { Repository.Name = x.name
-                                                                            Repository.Uri = x.uri })
-                                                     |> set }
 
 let Load (wsDir : DirectoryInfo) =
-    let config = MasterConfig()
-    let content = wsDir |> GetFile "sbs.yaml"
-                        |> ReadAllText
-    content |> config.LoadText
-    config |> convert
+    let masterConfigFile = wsDir |> GetFile "sbs.yaml"
+    use file = System.IO.File.OpenText(masterConfigFile.FullName)
+    let serializer = new SharpYaml.Serialization.Serializer()
+    let masterConfig = serializer.Deserialize<MasterConfiguration>(file)
+
+    let convertRepo (repoConfig : RepositoryConfiguration) =
+        { Repository.Name = repoConfig.name
+          Repository.Uri = repoConfig.uri }
+
+    { Configuration.Repositories = masterConfig.repositories |> Seq.map convertRepo |> Set }
 
