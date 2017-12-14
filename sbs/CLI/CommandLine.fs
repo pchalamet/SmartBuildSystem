@@ -1,18 +1,13 @@
 ﻿
 module CLI.CommandLine
-
 open Commands
-open Helpers.Collections
-
-
-
 
 type private TokenOption =
     | NoDeps
     | Shallow
     | Debug
     
-let private (|TokenOption|_|) (token : string) =
+let private (|TokenOption|_|) token =
     match token with
     | "--no-dep" -> Some TokenOption.NoDeps
     | "--shallow" -> Some TokenOption.Shallow
@@ -32,7 +27,7 @@ type private Token =
     | Open
     | Fetch
 
-let private (|Token|_|) (token : string) =
+let private (|Token|_|) token =
     match token with
     | "version" -> Some Token.Version
     | "usage" -> Some Token.Usage
@@ -52,7 +47,7 @@ let private (|Param|_|) (prm : string) =
     if prm.StartsWith("--") then None
     else Some prm
 
-let private (|Params|_|) (prms : string list) =
+let private (|Params|_|) prms =
     let hasNotParam = prms |> List.exists (fun x -> match x with
                                                     | Param _ -> false
                                                     | _ -> true)
@@ -60,17 +55,17 @@ let private (|Params|_|) (prms : string list) =
     else Some prms
 
 
-let private commandUsage (args : string list) =
+let private commandUsage args =
     match args with
     | _ -> Command.Usage
 
-let private commandInit (args : string list) =
+let private commandInit args =
     match args with
     | [Param path]
         -> Command.Init { Path = path }
     | _ -> Command.Error MainCommand.Init
 
-let rec private commandClone (shallow : bool) (deps : bool) (args : string list) =
+let rec private commandClone shallow deps args =
     match args with
     | TokenOption TokenOption.Shallow :: tail -> tail |> commandClone true deps
     | TokenOption TokenOption.NoDeps :: tail -> tail |> commandClone shallow false
@@ -78,18 +73,18 @@ let rec private commandClone (shallow : bool) (deps : bool) (args : string list)
     | Params patterns -> Command.Clone { Patterns = patterns; Shallow = shallow; Dependencies = deps }
     | _ -> Command.Error MainCommand.Clone
 
-let private commandCheckout (args : string list) =
+let private commandCheckout args =
     match args with
     | [Param branch] -> Command.Checkout { Branch = branch }
     | _ -> Command.Error MainCommand.Checkout
 
-let rec commandView (deps : bool) (args : string list) =
+let rec commandView deps args =
     match args with
     | TokenOption TokenOption.NoDeps :: tail -> tail |> commandView false
     | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
     | _ -> Command.Error MainCommand.View
 
-let rec private commandBuild (clean : bool) (config : string) (args : string list) =
+let rec private commandBuild clean config args =
     match args with
     | TokenOption TokenOption.Debug :: tail -> tail |> commandBuild clean "Debug" 
     | [Param name] -> Command.Build { Name = name 
@@ -97,17 +92,17 @@ let rec private commandBuild (clean : bool) (config : string) (args : string lis
                                       Config = config }
     | _ -> Command.Error MainCommand.Build
 
-let private commandExec (args : string list) =
+let private commandExec args =
     match args with
     | [Param cmd] -> Command.Exec { Command = cmd }
     | _ -> Command.Error MainCommand.Exec
 
-let private commandOpen (args : string list) =
+let private commandOpen args =
     match args with
     | [Param name] -> Command.Open { Name = name }
     | _ -> Command.Error MainCommand.Open
 
-let private commandFetch (args : string list) =
+let private commandFetch args =
     match args with
     | [] -> Command.Fetch
     | _ -> Command.Error MainCommand.Fetch
@@ -126,7 +121,6 @@ let Parse (args : string list) : Command =
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | Token Token.Fetch :: cmdArgs -> cmdArgs |> commandFetch
     | _ -> Command.Error MainCommand.Usage
-
 
 let IsVerbose (args : string list) : (bool * string list) =
     if (args <> List.empty && args |> List.head = "--verbose") then
