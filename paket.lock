@@ -1,6 +1,7 @@
 REDIRECTS: ON
 NUGET
   remote: https://www.nuget.org/api/v2
+    FSharp.Compiler.Tools (4.1.29)
     FSharp.Core (4.2.3) - restriction: >= net461
     SharpYaml (1.6.2) - restriction: >= net461
     System.ValueTuple (4.4) - restriction: >= net461
