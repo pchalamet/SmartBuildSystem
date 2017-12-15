@@ -32,6 +32,7 @@ let Load (wsDir : DirectoryInfo) =
 
     let convertRepo (repoConfig : RepositoryConfiguration) =
         if repoConfig.name |> isNull || repoConfig.uri |> isNull then failwithf "master.yaml is invalid"
+
         { Repository.Name = repoConfig.name
           Repository.Uri = repoConfig.uri }
 

@@ -15,8 +15,7 @@ let Init (cmd : CLI.Commands.InitWorkspace) =
     // first clone master repository
     let masterRepo = { Configuration.Master.Repository.Name = ""
                        Configuration.Master.Repository.Uri = Helpers.Env.MasterRepository () }
-    Tools.Git.Clone masterRepo wsDir false
-        |> Helpers.IO.CheckResponseCode
+    Tools.Git.Clone masterRepo wsDir false |> Helpers.IO.CheckResponseCode
 
     let currentDir = System.Environment.CurrentDirectory
     try

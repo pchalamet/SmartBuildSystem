@@ -44,10 +44,11 @@ let private scanDependencies (repoDir : DirectoryInfo) =
 
     let extractProjectReferences (prjFile : FileInfo) =
         let xdoc = XDocument.Load (prjFile.FullName)
-        let refs = xdoc.Descendants() |> Seq.filter (fun x -> x.Name.LocalName = "ProjectReference")
-                                        |> Seq.map (fun x -> !> x.Attribute(NsNone + "Include") : string)
-                                        |> Set
-                                        |> Seq.map (fun x -> prjFile, prjFile.Directory |> GetFile x)
+        let refs = xdoc.Descendants() 
+                        |> Seq.filter (fun x -> x.Name.LocalName = "ProjectReference")
+                        |> Seq.map (fun x -> !> x.Attribute(NsNone + "Include") : string)
+                        |> Set
+                        |> Seq.map (fun x -> prjFile, prjFile.Directory |> GetFile x)
         refs
 
     let repositories = ext2projType 
@@ -93,8 +94,9 @@ let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Conf
         | Some repo -> repo
         | _ -> failwithf "Repository %A is unknown" x
 
-    let dependencies = autoDependencies |> Seq.append dependencies
-                                        |> Seq.filter (fun x -> x <> repoName)
-                                        |> Set
-                                        |> Set.map getRepo
+    let dependencies = autoDependencies 
+                            |> Seq.append dependencies
+                            |> Seq.filter (fun x -> x <> repoName)
+                            |> Set
+                            |> Set.map getRepo
     { Configuration.Dependencies = dependencies }
