@@ -5,3 +5,4 @@ nuget SharpYaml restriction: >= net461
 nuget FSharp.Core restriction: >= net461
 nuget System.ValueTuple restriction: >= net461
 nuget FSharp.Compiler.Tools
+nuget NuGet.CommandLine
