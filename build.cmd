@@ -2,4 +2,4 @@ set HERE=%~dp0
 set CONFIG=%1
 %HERE%.paket\paket.exe restore
 msbuild /t:Build /p:Configuration=%CONFIG% %HERE%SmartBuildSystem.sln
-%HERE%packages\NuGet.CommandLine\tools\NuGet.exe pack %HERE%sbs\sbs.fsproj -OutputDirectory %HERE%artifacts -Tool -Properties Configuration=Release
+%HERE%packages\7-Zip.CommandLine\tools\7za.exe a -r artifacts\sbs.zip sbs\bin\%CONFIG%\*
