@@ -39,6 +39,7 @@ type MainCommand =
     | Open
     | Fetch
     | Pull
+    | Doctor
     | Unknown
 
 [<RequireQualifiedAccess>]
@@ -55,3 +56,4 @@ type Command =
     | Open of OpenView
     | Fetch
     | Pull
+    | Doctor

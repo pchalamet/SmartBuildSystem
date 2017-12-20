@@ -27,6 +27,7 @@ type private Token =
     | Open
     | Fetch
     | Pull
+    | Doctor
 
 let private (|Token|_|) token =
     match token with
@@ -42,6 +43,7 @@ let private (|Token|_|) token =
     | "open" -> Some Token.Open
     | "fetch" -> Some Token.Fetch
     | "pull" -> Some Token.Pull
+    | "doctor" -> Some Token.Doctor
     | _ -> None
 
 
@@ -114,6 +116,11 @@ let private commandPull args =
     | [] -> Command.Pull
     | _ -> Command.Error MainCommand.Pull
 
+let private commandDoctor args =
+    match args with
+    | [] -> Command.Doctor
+    | _ -> Command.Error MainCommand.Doctor
+
 let Parse (args : string list) : Command =
     match args with
     | [Token Token.Version] -> Command.Version
@@ -128,6 +135,7 @@ let Parse (args : string list) : Command =
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | Token Token.Fetch :: cmdArgs -> cmdArgs |> commandFetch
     | Token Token.Pull :: cmdArgs -> cmdArgs |> commandPull
+    | Token Token.Doctor :: cmdArgs -> cmdArgs |> commandDoctor
     | _ -> Command.Error MainCommand.Usage
 
 let IsVerbose (args : string list) : (bool * string list) =

@@ -48,3 +48,30 @@ let Exec (cmd : CLI.Commands.ExecCommand) =
                 Exec.Exec "cmd" args repoDir vars |> IO.CheckResponseCode
             with
                 e -> printfn "*** %s" e.Message
+
+let Doctor () =
+    let wsDir = Env.WorkspaceDir()
+    let config = wsDir |> Configuration.Master.Load
+    
+    let mutable missingRepos : Map<string, string list> = Map.empty
+
+    // check all dependencies are available for each repository
+    for repo in config.Repositories do
+        let repoDir = wsDir |> GetDirectory repo.Name
+        if repoDir |> Exists then
+            let repoConfig = Configuration.Repository.Load wsDir repo.Name config
+            for dependency in repoConfig.Dependencies do
+                let depDir = wsDir |> GetDirectory dependency.Name
+                if depDir |> Exists |> not then
+                    let missingEntry = match dependency.Name |> missingRepos.TryFind with
+                                       | Some x -> repo.Name :: x
+                                       | None -> [repo.Name]
+                    missingRepos <- missingRepos |> Map.add dependency.Name missingEntry
+    
+    if missingRepos <> Map.empty then
+        for missingRepo in missingRepos do
+            let forRepos = System.String.Join(", ", missingRepo.Value |> Array.ofList)
+            printfn "Missing repository %A as dependency for: %s" missingRepo.Key forRepos
+
+    let hasNoError = missingRepos = Map.empty
+    if hasNoError then printfn "No error detected!"   
