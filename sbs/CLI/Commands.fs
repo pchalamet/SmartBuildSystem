@@ -38,6 +38,7 @@ type MainCommand =
     | Exec
     | Open
     | Fetch
+    | Pull
     | Unknown
 
 [<RequireQualifiedAccess>]
@@ -53,3 +54,4 @@ type Command =
     | Error of MainCommand
     | Open of OpenView
     | Fetch
+    | Pull

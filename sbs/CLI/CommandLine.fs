@@ -26,6 +26,7 @@ type private Token =
     | Exec
     | Open
     | Fetch
+    | Pull
 
 let private (|Token|_|) token =
     match token with
@@ -40,6 +41,7 @@ let private (|Token|_|) token =
     | "exec" -> Some Token.Exec
     | "open" -> Some Token.Open
     | "fetch" -> Some Token.Fetch
+    | "pull" -> Some Token.Pull
     | _ -> None
 
 
@@ -107,6 +109,11 @@ let private commandFetch args =
     | [] -> Command.Fetch
     | _ -> Command.Error MainCommand.Fetch
 
+let private commandPull args =
+    match args with
+    | [] -> Command.Pull
+    | _ -> Command.Error MainCommand.Pull
+
 let Parse (args : string list) : Command =
     match args with
     | [Token Token.Version] -> Command.Version
@@ -120,6 +127,7 @@ let Parse (args : string list) : Command =
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | Token Token.Fetch :: cmdArgs -> cmdArgs |> commandFetch
+    | Token Token.Pull :: cmdArgs -> cmdArgs |> commandPull
     | _ -> Command.Error MainCommand.Usage
 
 let IsVerbose (args : string list) : (bool * string list) =

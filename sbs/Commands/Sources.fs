@@ -41,3 +41,13 @@ let Fetch () =
         if repoDir.Exists then
             Helpers.Console.PrintInfo (sprintf "Fetching repository %A" repo.Name) 
             Tools.Git.Fetch repo wsDir |> Helpers.IO.CheckResponseCode
+
+let Pull () =
+    let wsDir = Env.WorkspaceDir()
+    let config = wsDir |> Configuration.Master.Load
+    let repos = config.Repositories
+    for repo in repos do
+        let repoDir = wsDir |> Fs.GetDirectory repo.Name
+        if repoDir.Exists then
+            Helpers.Console.PrintInfo (sprintf "Pulling repository %A" repo.Name) 
+            Tools.Git.Pull repo wsDir |> Helpers.IO.CheckResponseCode
