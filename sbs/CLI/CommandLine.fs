@@ -3,13 +3,13 @@ module CLI.CommandLine
 open Commands
 
 type private TokenOption =
-    | NoDeps
+    | Only
     | Shallow
     | Debug
     
 let private (|TokenOption|_|) token =
     match token with
-    | "--no-dep" -> Some TokenOption.NoDeps
+    | "--only" -> Some TokenOption.Only
     | "--shallow" -> Some TokenOption.Shallow
     | "--debug" -> Some TokenOption.Debug
     | _ -> None
@@ -70,7 +70,7 @@ let private commandInit args =
 let rec private commandClone shallow deps args =
     match args with
     | TokenOption TokenOption.Shallow :: tail -> tail |> commandClone true deps
-    | TokenOption TokenOption.NoDeps :: tail -> tail |> commandClone shallow false
+    | TokenOption TokenOption.Only :: tail -> tail |> commandClone shallow false
     | [] -> Command.Error MainCommand.Clone
     | Params patterns -> Command.Clone { Patterns = patterns; Shallow = shallow; Dependencies = deps }
     | _ -> Command.Error MainCommand.Clone
@@ -82,7 +82,7 @@ let private commandCheckout args =
 
 let rec commandView deps args =
     match args with
-    | TokenOption TokenOption.NoDeps :: tail -> tail |> commandView false
+    | TokenOption TokenOption.Only :: tail -> tail |> commandView false
     | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
     | _ -> Command.Error MainCommand.View
 
