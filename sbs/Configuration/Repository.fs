@@ -92,7 +92,7 @@ let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Conf
     let getRepo x =
         match repoMap |> Map.tryFind x with
         | Some repo -> repo
-        | _ -> failwithf "Repository %A is unknown" x
+        | _ -> failwithf "Repository %A is an unknown dependency of %A" x repoName
 
     let dependencies = autoDependencies 
                             |> Seq.append dependencies
