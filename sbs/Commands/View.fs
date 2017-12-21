@@ -119,6 +119,9 @@ let Create (cmd : CLI.Commands.CreateView) =
                 else selectedRepos
     let projects = repos |> Seq.fold (fun s t -> Seq.append s (gatherProjects wsDir t)) Seq.empty
     generateSolution wsDir cmd.Name projects
+
+    if projects = Seq.empty then printfn "Warning: empty selection specified"
+
     
 let Build (cmd : CLI.Commands.BuildView) =
     let wsDir = Env.WorkspaceDir()

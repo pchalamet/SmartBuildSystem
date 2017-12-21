@@ -17,6 +17,8 @@ let rec private cloneRepository wsDir (config : Configuration.Master.Configurati
             repoConfig.Dependencies |> Seq.map (fun x -> { info with CLI.Commands.Patterns = [x.Name]})
                                     |> Seq.iter (cloneRepository wsDir config)
 
+    if repos = Set.empty then printfn "Warning: empty selection specified"
+
 let Clone (info : CLI.Commands.CloneRepository) =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
