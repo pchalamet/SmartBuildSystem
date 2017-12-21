@@ -60,18 +60,18 @@ let private scanDependencies (repoDir : DirectoryInfo) =
 
 
 
-
-
 let getConfig (repo : string) (repoConfig : FileInfo) =
     if repoConfig.Exists |> not then (true, Seq.empty)
     else 
-        use file = System.IO.File.OpenText(repoConfig.FullName)
-        let serializer = new SharpYaml.Serialization.Serializer()
-        let repoConfig = serializer.Deserialize<RepositoryConfiguration>(file)
-        if repoConfig.dependencies |> isNull then failwithf "repository.yaml in %A is invalid" repo
+        try
+            use file = System.IO.File.OpenText(repoConfig.FullName)
+            let serializer = new SharpYaml.Serialization.Serializer()
+            let repoConfig = serializer.Deserialize<RepositoryConfiguration>(file)
+            if repoConfig.dependencies |> isNull then failwithf "dependencies list is mandatory"
 
-        (repoConfig.``auto-dependencies``, repoConfig.dependencies |> seq)
-
+            (repoConfig.``auto-dependencies``, repoConfig.dependencies |> seq)
+        with
+            exn -> failwithf "repository.yaml in %A is invalid (%s)" repo exn.Message
 
 let Load (wsDir : DirectoryInfo) (repoName : string) (masterConfig : Master.Configuration) =
     // validate repo name
