@@ -11,6 +11,7 @@ end
 
 
 let Load (repoDir : DirectoryInfo) =
+    if repoDir.Exists |> not then failwithf "Repository %A is not cloned" repoDir.Name
     let repoConfig = repoDir |> Fs.GetFile "repository.yaml"
     if repoConfig.Exists |> not then (true, Seq.empty)
     else 

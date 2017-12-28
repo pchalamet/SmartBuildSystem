@@ -15,7 +15,7 @@ let processMain argv =
     | Command.Open info -> Commands.View.Open info
     | Command.Fetch -> Commands.Sources.Fetch ()
     | Command.Pull -> Commands.Sources.Pull ()
-    | Command.Doctor -> Commands.Workspace.Doctor ()
+    | Command.Doctor -> Commands.Doctor.Check ()
     | Command.Error info -> Commands.Help.Usage info
     | Command.Version -> Commands.Help.Version ()
 

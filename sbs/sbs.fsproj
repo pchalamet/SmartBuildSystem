@@ -103,6 +103,7 @@
     <Compile Include="Commands\Sources.fs" />
     <Compile Include="Commands\Workspace.fs" />
     <Compile Include="Commands\View.fs" />
+    <Compile Include="Commands\Doctor.fs" />
     <Compile Include="Commands\Help.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
