@@ -4,6 +4,7 @@ open Helpers
 open Helpers.Collections
 open Helpers.Fs
 open System.Linq
+open Core.Repository
 
 let Init (cmd : CLI.Commands.InitWorkspace) =
     let wsDir = cmd.Path |> DirectoryInfo
@@ -56,8 +57,8 @@ let private findMissingDependencies wsDir (config : Configuration.Master.Configu
         for repo in config.Repositories do
             let repoDir = wsDir |> GetDirectory repo.Name
             if repoDir |> Exists then
-                let repoConfig = Configuration.Repository.Load wsDir repo.Name config
-                for dependency in repoConfig.Dependencies do
+                let dependencies = { RepositoryName = repo.Name }.ScanDependencies wsDir config
+                for dependency in dependencies do
                     let depDir = wsDir |> GetDirectory dependency.Name
                     if depDir |> Exists |> not then
                         yield (dependency.Name, repo.Name)

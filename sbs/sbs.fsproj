@@ -99,6 +99,10 @@
     <Compile Include="Tools\Git.fs" />
     <Compile Include="CLI\Commands.fs" />
     <Compile Include="CLI\CommandLine.fs" />
+    <Compile Include="Core\Project.fs" />
+    <Compile Include="Core\Repository.fs" />
+    <Compile Include="Core\View.fs" />
+    <Compile Include="Core\Solution.fs" />
     <Compile Include="Commands\Sources.fs" />
     <Compile Include="Commands\Workspace.fs" />
     <Compile Include="Commands\View.fs" />

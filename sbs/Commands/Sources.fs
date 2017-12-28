@@ -1,6 +1,7 @@
 ﻿module Commands.Sources
 open Helpers
 open Helpers.Fs
+open Core.Repository
 
 let rec private cloneRepository wsDir (config : Configuration.Master.Configuration) (info : CLI.Commands.CloneRepository) =
     // clone repository if necessary
@@ -13,9 +14,9 @@ let rec private cloneRepository wsDir (config : Configuration.Master.Configurati
 
         // clone dependencies
         if info.Dependencies then
-            let repoConfig = Configuration.Repository.Load wsDir repo.Name config
-            repoConfig.Dependencies |> Seq.map (fun x -> { info with CLI.Commands.Patterns = [x.Name]})
-                                    |> Seq.iter (cloneRepository wsDir config)
+            { RepositoryName = repo.Name }.ScanDependencies wsDir config
+                |> Seq.map (fun x -> { info with CLI.Commands.Patterns = [x.Name]})
+                |> Seq.iter (cloneRepository wsDir config)
 
     if repos = Set.empty then printfn "Warning: empty selection specified"
 

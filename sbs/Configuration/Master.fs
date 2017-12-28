@@ -31,7 +31,7 @@ let Load (wsDir : DirectoryInfo) =
     let masterConfig = serializer.Deserialize<MasterConfiguration>(file)
 
     let convertRepo (repoConfig : RepositoryConfiguration) =
-        if repoConfig.name |> isNull || repoConfig.uri |> isNull then failwithf "master.yaml is invalid"
+        if repoConfig.name |> isNull || repoConfig.uri |> isNull then failwithf "sbs.yaml is invalid"
 
         { Repository.Name = repoConfig.name
           Repository.Uri = repoConfig.uri }
