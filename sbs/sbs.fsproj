@@ -81,9 +81,6 @@
   <Import Project="..\packages\FSharp.Compiler.Tools\build\FSharp.Compiler.Tools.props" />
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <None Include="Examples\Repository.yaml" />
-    <None Include="Examples\Master.yaml" />
-    <Content Include="Examples\App.config" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Helpers\IO.fs" />
     <Compile Include="Helpers\Fs.fs" />
