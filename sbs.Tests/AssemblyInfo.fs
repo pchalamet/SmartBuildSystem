@@ -1,4 +1,4 @@
-﻿namespace sbs.AssemblyInfo
+﻿namespace sbs.Tests.AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices
@@ -7,11 +7,11 @@ open System.Runtime.InteropServices
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[<assembly: AssemblyTitle("sbs")>]
+[<assembly: AssemblyTitle("sbs.Tests")>]
 [<assembly: AssemblyDescription("")>]
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("")>]
-[<assembly: AssemblyProduct("sbs")>]
+[<assembly: AssemblyProduct("sbs.Tests")>]
 [<assembly: AssemblyCopyright("Copyright ©  2017")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
@@ -22,7 +22,7 @@ open System.Runtime.InteropServices
 [<assembly: ComVisible(false)>]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[<assembly: Guid("fc3d0c92-3156-4c21-a4dd-18bcd8622e8a")>]
+[<assembly: Guid("4db60fd6-d981-48fc-91eb-3be27207bb9e")>]
 
 // Version information for an assembly consists of the following four values:
 // 
@@ -36,7 +36,6 @@ open System.Runtime.InteropServices
 // [<assembly: AssemblyVersion("1.0.*")>]
 [<assembly: AssemblyVersion("1.0.0.0")>]
 [<assembly: AssemblyFileVersion("1.0.0.0")>]
-[<assembly: InternalsVisibleTo("sbs.Tests")>]
 
 do
     ()

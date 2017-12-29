@@ -7,7 +7,7 @@ open System.Xml.Linq
 
 
 
-let private scanDependencies (repoDir : DirectoryInfo) =
+let private scanRepositoryDependencies (repoDir : DirectoryInfo) =
     let wsDir = repoDir.Parent
 
     let extractRepoFolder ((projectFile, file) : FileInfo * FileInfo) =
@@ -35,10 +35,11 @@ let private scanDependencies (repoDir : DirectoryInfo) =
     repositories
 
 
+
 type Repository =
     { RepositoryName : string }
 with
-    member this.ScanDependencies wsDir (masterConfig : Configuration.Master.Configuration) =
+    member this.FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) =
         // validate repo name
         let repo = match masterConfig.Repositories |> Seq.tryFind (fun x -> x.Name = this.RepositoryName) with
                    | Some x -> x
@@ -51,7 +52,7 @@ with
                                                 |> Map
 
         let autoDependencies = match autoDeps with
-                               | true -> scanDependencies repoDir
+                               | true -> scanRepositoryDependencies repoDir
                                | _ -> Seq.empty
 
         let getRepo x =

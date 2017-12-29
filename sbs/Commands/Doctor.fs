@@ -9,7 +9,7 @@ let private findMissingDependencies wsDir (config : Configuration.Master.Configu
         for repo in config.Repositories do
             let repoDir = wsDir |> Fs.GetDirectory repo.Name
             if repoDir.Exists then
-                let dependencies = { RepositoryName = repo.Name }.ScanDependencies wsDir config
+                let dependencies = { RepositoryName = repo.Name }.FindDependencies wsDir config
                 for dependency in dependencies do
                     let depDir = wsDir |> Fs.GetDirectory dependency.Name
                     if depDir.Exists |> not then

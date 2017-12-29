@@ -7,7 +7,7 @@ open Core.Repository
 
 let rec private gatherDependencies wsDir (config : Configuration.Master.Configuration) (closure : Configuration.Master.Repository set) =
     let getDependencies (repo : Configuration.Master.Repository) (state : Configuration.Master.Repository set) =
-        let newDependencies = { RepositoryName = repo.Name }.ScanDependencies wsDir config
+        let newDependencies = { RepositoryName = repo.Name }.FindDependencies wsDir config
         state + newDependencies
 
     let repoToGather = closure |> Set.fold (fun s t -> getDependencies t s) closure

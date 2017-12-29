@@ -14,7 +14,7 @@ let rec private cloneRepository wsDir (config : Configuration.Master.Configurati
 
         // clone dependencies
         if info.Dependencies then
-            { RepositoryName = repo.Name }.ScanDependencies wsDir config
+            { RepositoryName = repo.Name }.FindDependencies wsDir config
                 |> Seq.map (fun x -> { info with CLI.Commands.Patterns = [x.Name]})
                 |> Seq.iter (cloneRepository wsDir config)
 
