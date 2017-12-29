@@ -41,22 +41,18 @@ type Repository =
 with
     member this.FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) =
         // validate repo name
-        let repo = match masterConfig.Repositories |> Seq.tryFind (fun x -> x.Name = this.RepositoryName) with
+        let repo = match masterConfig.GetRepository this.RepositoryName with
                    | Some x -> x
                    | None -> failwithf "Repository %A does not exist" this.RepositoryName
 
         let repoDir = wsDir |> Fs.GetDirectory repo.Name
         let autoDeps, dependencies = repoDir |> Repository.Load
 
-        let repoMap = masterConfig.Repositories |> Seq.map (fun x -> x.Name, x) 
-                                                |> Map
-
-        let autoDependencies = match autoDeps with
-                               | true -> scanRepositoryDependencies repoDir
-                               | _ -> Seq.empty
+        let autoDependencies = if autoDeps then scanRepositoryDependencies repoDir
+                               else Seq.empty
 
         let getRepo x =
-            match repoMap |> Map.tryFind x with
+            match masterConfig.GetRepository x with
             | Some repo -> repo
             | _ -> failwithf "Repository %A is an unknown dependency of %A" x this.RepositoryName
 

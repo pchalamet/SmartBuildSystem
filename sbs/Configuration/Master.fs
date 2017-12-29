@@ -11,8 +11,9 @@ type Repository =
 [<RequireQualifiedAccess>]
 type Configuration =
     { Repositories : Repository set }
-
-
+with
+    member this.GetRepository name =
+        this.Repositories |> Seq.tryFind (fun x -> x.Name = name)
 
 type RepositoryConfiguration() = class
     member val name : string = null with get, set
