@@ -15,13 +15,11 @@ let private defaultPSI (command : string) (args : string) (dir : DirectoryInfo) 
                                 Arguments = args,
                                 UseShellExecute = false,
                                 WorkingDirectory = dir.FullName,
-                                LoadUserProfile = true)
+                                LoadUserProfile = true,
+                                RedirectStandardOutput = redirect,
+                                RedirectStandardError = redirect)
     for var in vars do
         psi.EnvironmentVariables.Add(var.Key, var.Value)
-
-    if redirect then
-        psi.RedirectStandardOutput <- true
-        psi.RedirectStandardError <- true
 
     psi
 

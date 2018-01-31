@@ -45,12 +45,33 @@ let Fetch () =
             Helpers.Console.PrintInfo (sprintf "Fetching repository %A" repo.Name) 
             Tools.Git.Fetch repo wsDir |> Helpers.IO.CheckResponseCode
 
-let Pull () =
+
+let rec private pullRepositories (info : CLI.Commands.PullRepositories) processedRepositories =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
-    let repos = config.Repositories
+    let repos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) (info.Patterns |> Set)
     for repo in repos do
-        let repoDir = wsDir |> Fs.GetDirectory repo.Name
-        if repoDir.Exists then
-            Helpers.Console.PrintInfo (sprintf "Pulling repository %A" repo.Name) 
-            Tools.Git.Pull repo wsDir |> Helpers.IO.CheckResponseCode
+        if processedRepositories |> Set.contains repo |> not then
+            let repoDir = wsDir |> Fs.GetDirectory repo.Name
+            if repoDir.Exists && (processedRepositories |> Set.contains repo |> not) then
+                Helpers.Console.PrintInfo (sprintf "Pulling repository %A" repo.Name) 
+                Tools.Git.Pull repo wsDir |> Helpers.IO.CheckResponseCode
+
+    let newProcessedRepositories = 
+        if info.Dependencies && repos <> Set.empty then
+            let newPatterns = (repos |> Set.map (fun x -> { RepositoryName = x.Name }.FindDependencies wsDir config)
+                                     |> Set.unionMany)
+                              - processedRepositories
+                              - repos
+
+            let newInfo = { info with CLI.Commands.PullRepositories.Patterns = newPatterns |> Seq.map (fun x -> x.Name) |> List.ofSeq }
+            pullRepositories newInfo (processedRepositories |> Set.union repos)
+        else
+            repos
+
+    processedRepositories |> Set.union newProcessedRepositories
+
+let Pull (info : CLI.Commands.PullRepositories) =
+    pullRepositories info Set.empty |> ignore
+
+ 

@@ -111,9 +111,11 @@ let private commandFetch args =
     | [] -> Command.Fetch
     | _ -> Command.Error MainCommand.Fetch
 
-let private commandPull args =
+let rec private commandPull deps args =
     match args with
-    | [] -> Command.Pull
+    | TokenOption TokenOption.Only :: tail -> tail |> commandPull false
+    | Params patterns -> Command.Pull { Dependencies = deps
+                                        Patterns = patterns }
     | _ -> Command.Error MainCommand.Pull
 
 let private commandDoctor args =
@@ -134,7 +136,7 @@ let Parse (args : string list) : Command =
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | Token Token.Fetch :: cmdArgs -> cmdArgs |> commandFetch
-    | Token Token.Pull :: cmdArgs -> cmdArgs |> commandPull
+    | Token Token.Pull :: cmdArgs -> cmdArgs |> commandPull true
     | Token Token.Doctor :: cmdArgs -> cmdArgs |> commandDoctor
     | _ -> Command.Error MainCommand.Usage
 

@@ -27,6 +27,10 @@ type OpenView =
 type ExecCommand =
     { Command : string }
 
+type PullRepositories =
+    { Dependencies : bool
+      Patterns : string list }
+
 [<RequireQualifiedAccess>]
 type MainCommand =
     | Usage
@@ -55,5 +59,5 @@ type Command =
     | Error of MainCommand
     | Open of OpenView
     | Fetch
-    | Pull
+    | Pull of PullRepositories
     | Doctor
