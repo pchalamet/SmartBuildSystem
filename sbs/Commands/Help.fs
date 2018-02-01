@@ -28,7 +28,7 @@ let Usage (what : MainCommand) =
 
 let private versionContent() =
     let version = Helpers.Env.Version()
-    let versionContent = sprintf "full-build %s" (version.ToString())
+    let versionContent = sprintf "sbs %s" (version.ToString())
     [ versionContent ]
 
 
