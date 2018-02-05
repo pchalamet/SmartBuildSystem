@@ -31,6 +31,9 @@ type PullRepositories =
     { Dependencies : bool
       Patterns : string list }
 
+type Dependencies =
+    { Patterns : string list }
+
 [<RequireQualifiedAccess>]
 type MainCommand =
     | Usage
@@ -43,6 +46,7 @@ type MainCommand =
     | Open
     | Fetch
     | Pull
+    | Dependencies
     | Doctor
     | Unknown
 
@@ -59,5 +63,6 @@ type Command =
     | Error of MainCommand
     | Open of OpenView
     | Fetch
+    | Dependencies of Dependencies
     | Pull of PullRepositories
     | Doctor
