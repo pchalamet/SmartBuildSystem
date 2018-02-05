@@ -13,7 +13,6 @@ let private usageContent() =
         [MainCommand.Pull], "pull [--only] <repository...> : pull (ff-only) on all repositories"
         [MainCommand.Build], "build [--debug] <view> : build a repository" 
         [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" 
-        [MainCommand.Dependencies], "dependencies <repository...> : display dependencies"
         [MainCommand.Open], "open <view> : open view with your favorite ide" 
         [MainCommand.Exec], "exec <cmd> :  execute command for each repository (variables: SBS_NAME, SBS_PATH, SBS_URL, SBS_WKS)"
         [MainCommand.Doctor], "doctor : check workspace consistency" ]

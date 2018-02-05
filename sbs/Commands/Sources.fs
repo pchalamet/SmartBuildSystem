@@ -75,8 +75,3 @@ let Pull (info : CLI.Commands.PullRepositories) =
         Helpers.Console.PrintInfo (sprintf "Pulling repository %A" repo.Name) 
         Tools.Git.Pull repo wsDir |> Helpers.IO.CheckResponseCode
     processRepositories (info.Patterns |> Set.ofList) info.Dependencies doPull Set.empty |> ignore
-
-let Dependencies (info : CLI.Commands.Dependencies) =
-    let doDisplay (repo : Configuration.Master.Repository) wsDir =
-        printfn "%s" repo.Name
-    processRepositories (info.Patterns |> Set.ofList) true doDisplay Set.empty |> ignore

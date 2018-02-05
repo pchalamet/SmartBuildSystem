@@ -23,14 +23,27 @@ let private gatherProjects wsDir (repo : Configuration.Master.Repository) =
 
 
 
-[<RequireQualifiedAccess>]
+
 type View =
-    { RepositorySelector : string list 
-      SelectorOnly : bool }
+    { Name : string
+      Patterns : string set
+      Dependencies : bool
+      Repositories : Configuration.Master.Repository set 
+      Projects : string set }
 with
-    member this.SelectedProjects (wsDir : DirectoryInfo) (masterConfig : Configuration.Master.Configuration) =
-        let selectedRepos = Helpers.Text.FilterMatch (masterConfig.Repositories) (fun x -> x.Name) (this.RepositorySelector |> Set)
-        let repos = if this.SelectorOnly then selectedRepos
-                    else gatherDependencies wsDir masterConfig selectedRepos
+    static member Materialize (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (name : string) (patterns : string set) (dependencies : bool) =
+        let selectedRepos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) patterns
+        let repos = if dependencies then gatherDependencies wsDir config selectedRepos
+                    else selectedRepos
         let projects = repos |> Seq.fold (fun s t -> Seq.append s (gatherProjects wsDir t)) Seq.empty
-        projects
+                             |> Seq.map (fun x -> x.FullName)
+                             |> Set.ofSeq
+        { Name = name
+          Patterns = patterns
+          Dependencies = dependencies
+          Repositories = repos
+          Projects = projects }
+
+    member this.Save (wsDir : DirectoryInfo) =
+        let viewFile = wsDir |> Fs.GetFile (sprintf "%s.view" this.Name)
+        File.WriteAllLines(viewFile.FullName, this.Repositories |> Seq.map (fun x -> x.Name))

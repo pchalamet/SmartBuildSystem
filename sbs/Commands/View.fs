@@ -15,13 +15,11 @@ let private generateSolution (wsDir : DirectoryInfo) name (projects : FileInfo s
 let Create (cmd : CLI.Commands.CreateView) =
     let wsDir = Env.WorkspaceDir()
     let masterConfig = wsDir |> Configuration.Master.Load
+    let view = View.Materialize wsDir masterConfig  cmd.Name (cmd.Patterns |> set) cmd.Dependencies
+    generateSolution wsDir cmd.Name (view.Projects |> Seq.map FileInfo)
+    view.Save wsDir
 
-    let view = { View.RepositorySelector = cmd.Patterns
-                 View.SelectorOnly = cmd.Dependencies |> not }
-    let projects = view.SelectedProjects wsDir masterConfig
-    generateSolution wsDir cmd.Name projects
-
-    if projects = Seq.empty then printfn "Warning: empty selection specified"
+    if view.Projects = Set.empty then printfn "Warning: empty selection specified"
 
     
 let Build (cmd : CLI.Commands.BuildView) =

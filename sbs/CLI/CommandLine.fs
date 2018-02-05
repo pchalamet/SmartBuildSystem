@@ -27,7 +27,6 @@ type private Token =
     | Open
     | Fetch
     | Pull
-    | Dependencies
     | Doctor
 
 let private (|Token|_|) token =
@@ -44,7 +43,6 @@ let private (|Token|_|) token =
     | "open" -> Some Token.Open
     | "fetch" -> Some Token.Fetch
     | "pull" -> Some Token.Pull
-    | "dependencies" -> Some Token.Dependencies
     | "doctor" -> Some Token.Doctor
     | _ -> None
 
@@ -86,7 +84,7 @@ let private commandCheckout args =
 
 let rec commandView deps args =
     match args with
-    | TokenOption TokenOption.Only :: tail -> tail |> commandView false
+    | TokenOption TokenOption.Only :: tail -> tail |> commandView true
     | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
     | _ -> Command.Error MainCommand.View
 
@@ -120,11 +118,6 @@ let rec private commandPull deps args =
                                         Patterns = patterns }
     | _ -> Command.Error MainCommand.Pull
 
-let rec private commandDependencies args =
-    match args with
-    | Params patterns -> Command.Dependencies { Patterns = patterns }
-    | _ -> Command.Error MainCommand.Dependencies
-
 let private commandDoctor args =
     match args with
     | [] -> Command.Doctor
@@ -144,7 +137,6 @@ let Parse (args : string list) : Command =
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | Token Token.Fetch :: cmdArgs -> cmdArgs |> commandFetch
     | Token Token.Pull :: cmdArgs -> cmdArgs |> commandPull true
-    | Token Token.Dependencies :: cmdArgs -> cmdArgs |> commandDependencies
     | Token Token.Doctor :: cmdArgs -> cmdArgs |> commandDoctor
     | _ -> Command.Error MainCommand.Usage
 
