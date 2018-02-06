@@ -27,7 +27,7 @@ let private defaultPSI (command : string) (args : string) (dir : DirectoryInfo) 
 let private supervisedExec redirect (command : string) (args : string) (dir : DirectoryInfo) (vars : Map<string, string>) =
     let psi = defaultPSI command args dir vars redirect
     use proc = Process.Start (psi)
-    if proc |> isNull then failwith "Failed to start process"
+    if proc |> isNull then failwithf "Failed to start process %A with arguments %A" command args
 
     let rec read (stm : System.IO.TextReader) buffer =
         let line = stm.ReadLine()
@@ -41,8 +41,8 @@ let private supervisedExec redirect (command : string) (args : string) (dir : Di
                                else async { return List.empty |> MonitorCommand.Err }
     let asyncCode = async { proc.WaitForExit(); return proc.ExitCode |> MonitorCommand.End }
     let res = [ asyncCode ; asyncOut ; asyncErr ] |> Async.Parallel |> Async.RunSynchronously
-    match res.[0], res.[1], res.[2] with
-    | MonitorCommand.End code, MonitorCommand.Out out, MonitorCommand.Err err 
+    match res with
+    | [| MonitorCommand.End code; MonitorCommand.Out out; MonitorCommand.Err err |]
             -> { Result.Code=code
                  Result.Out=out
                  Result.Error=err

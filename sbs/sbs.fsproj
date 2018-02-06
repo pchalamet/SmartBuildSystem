@@ -32,8 +32,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>clone --shallow manage</StartArguments>
-    <StartWorkingDirectory>D:\src\Build\tutu</StartWorkingDirectory>
+    <StartArguments>clone *</StartArguments>
+    <StartWorkingDirectory>D:\src\smart2</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
