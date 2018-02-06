@@ -3,17 +3,13 @@ open Helpers
 open Helpers.Fs
 open Helpers.Collections
 open Core.Repository
+open System.IO
 
-
-
-let rec private processRepositories (patterns : string Set) (deps : bool) action processedRepositories =
-    let wsDir = Env.WorkspaceDir()
-    let config = wsDir |> Configuration.Master.Load
+let rec private innerProcessRepositories (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (patterns : string Set) (deps : bool) action processedRepositories =
     let repos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) patterns
     for repo in repos do
         if processedRepositories |> Set.contains repo |> not then
-            if processedRepositories |> Set.contains repo |> not then
-                action repo wsDir
+            action repo wsDir
 
     let newProcessedRepositories = 
         if deps && repos <> Set.empty then
@@ -22,11 +18,17 @@ let rec private processRepositories (patterns : string Set) (deps : bool) action
                               |> Set.substract processedRepositories
                               |> Set.substract repos
                               |> Set.map (fun x -> x.Name)
-            processRepositories newPatterns deps action (processedRepositories |> Set.union repos)
+            innerProcessRepositories wsDir config newPatterns deps action (processedRepositories |> Set.union repos)
         else
             repos
 
     processedRepositories |> Set.union newProcessedRepositories
+
+
+let private processRepositories (patterns : string Set) (deps : bool) action processedRepositories =
+    let wsDir = Env.WorkspaceDir()
+    let config = wsDir |> Configuration.Master.Load
+    innerProcessRepositories wsDir config patterns deps action processedRepositories
 
 
 let Clone (info : CLI.Commands.CloneRepository) =
