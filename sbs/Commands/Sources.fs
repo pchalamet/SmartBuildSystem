@@ -1,6 +1,7 @@
 ﻿module Commands.Sources
 open Helpers
 open Helpers.Fs
+open Helpers.Collections
 open Core.Repository
 
 
@@ -18,8 +19,8 @@ let rec private processRepositories (patterns : string Set) (deps : bool) action
         if deps && repos <> Set.empty then
             let newPatterns = (repos |> Set.map (fun x -> { RepositoryName = x.Name }.FindDependencies wsDir config)
                                      |> Set.unionMany)
-                              - processedRepositories
-                              - repos
+                              |> Set.substract processedRepositories
+                              |> Set.substract repos
                               |> Set.map (fun x -> x.Name)
             processRepositories newPatterns deps action (processedRepositories |> Set.union repos)
         else
