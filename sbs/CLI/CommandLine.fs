@@ -55,7 +55,7 @@ let private (|Params|_|) prms =
     let hasNotParam = prms |> List.exists (fun x -> match x with
                                                     | Param _ -> false
                                                     | _ -> true)
-    if hasNotParam then None
+    if hasNotParam || prms = List.empty then None
     else Some prms
 
 
