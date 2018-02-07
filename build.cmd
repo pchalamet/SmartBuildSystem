@@ -13,4 +13,4 @@ if exist %HERE%artifacts rmdir /q /s %HERE%artifacts
 msbuild /t:Build /p:Configuration=%CONFIG% %HERE%SmartBuildSystem.sln
 %HERE%packages\7-Zip.CommandLine\tools\7za.exe a -r artifacts\sbs.zip .\sbs\bin\%CONFIG%\*
 %HERE%packages\NuGet.CommandLine\tools\NuGet.exe pack sbs.nuspec -OutputDirectory %HERE%artifacts -Version %VERSION% -Properties Configuration=%CONFIG%
-move %HERE%artifacts\sbs.%VERSION%.nupkg %HERE%artifacts\sbs.nupkg
+move %HERE%artifacts\sbs.%VERSION%.0.nupkg %HERE%artifacts\sbs.nupkg
