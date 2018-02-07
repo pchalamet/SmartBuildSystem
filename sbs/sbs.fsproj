@@ -81,7 +81,7 @@
   <Import Project="..\packages\FSharp.Compiler.Tools\build\FSharp.Compiler.Tools.props" />
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.fs" />
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Helpers\IO.fs" />
     <Compile Include="Helpers\Fs.fs" />
     <Compile Include="Helpers\Env.fs" />
