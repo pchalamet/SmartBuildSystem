@@ -2,6 +2,7 @@
 open Helpers.Collections
 open Helpers.Fs
 open System.IO
+open SharpYaml.Serialization
 
 
 type Manifest =
@@ -15,7 +16,10 @@ end
 
 let Load (file : FileInfo) =
     use file = System.IO.File.OpenText(file.FullName)
-    let serializer = new SharpYaml.Serialization.Serializer()
-    let manifestConfigFile = serializer.Deserialize<ManifestConfiguration>(file)
-
-    { Name = manifestConfigFile.app }
+    let ystm = YamlStream()
+    ystm.Load(file)
+    let rootNode = ystm.Documents.[0].RootNode :?> YamlMappingNode
+    let appNode = rootNode.Children.[YamlScalarNode("app")]   
+    let appScalarNode = appNode :?> YamlScalarNode
+    { Name = appScalarNode.Value }
+    

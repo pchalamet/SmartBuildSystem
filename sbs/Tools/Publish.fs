@@ -4,11 +4,13 @@ open System.Linq
 open System.Xml.Linq
 open Helpers.Xml
 open Helpers.Fs
+open Helpers.Exec
+open Helpers.IO
 
 
 type ProjectType =
     | MsBuild of FileInfo
-    | MsBuildSdk of FileInfo
+    | MsBuildSdk of FileInfo * string
     | Unknown
 
 
@@ -18,7 +20,7 @@ let private sniffProjectType (folder : DirectoryInfo) =
     let targetFxVer = content.Descendants(NsMsBuild + "TargetFrameworkVersion").SingleOrDefault()
     let targetFx = content.Descendants(NsNone + "TargetFramework").SingleOrDefault()
     if targetFxVer |> isNull |> not then ProjectType.MsBuild project
-    else if targetFx |> isNull |> not then ProjectType.MsBuildSdk project
+    else if targetFx |> isNull |> not then ProjectType.MsBuildSdk (project, (!> targetFx : string))
     else ProjectType.Unknown
 
 
@@ -46,13 +48,31 @@ let private publishAppMsBuild wsDir (project : FileInfo) config app =
     publishArtifact wsDir output "app" app
     publishArtifact wsDir config "config" app
 
+let private publishAppMsBuildSdk wsDir (project : FileInfo) config target app =
+    let publishArgs = sprintf "publish --no-restore --configuration %s %A" config project.FullName
+    Exec "dotnet" publishArgs project.Directory Map.empty |> CheckResponseCode
+
+    let output = project.Directory |> GetDirectory "bin"
+                                   |> GetDirectory config
+                                   |> GetDirectory target
+    let config = project.Directory |> GetDirectory "config"
+
+    if output |> Exists |> not then failwithf "Can't find output for application %A" app
+    if config |> Exists |> not then failwithf "Can't find configurations for application %A" app
+
+    wsDir |> GetDirectory ".apps"
+          |> GetDirectory app
+          |> Delete
+
+    publishArtifact wsDir output "app" app
+    publishArtifact wsDir config "config" app
 
 
 let private publishApp wsDir (projectFolder : DirectoryInfo) config name =
     let prjType = projectFolder |> sniffProjectType
     let publishApplicationArtifacts = match prjType with
                                       | MsBuild project -> publishAppMsBuild wsDir project config
-                                      //| MsBuildSdk project -> publishAppMsBuild project config
+                                      | MsBuildSdk (project,target) -> publishAppMsBuildSdk wsDir project config target
                                       | _ -> failwithf "Unknown project type"
     publishApplicationArtifacts name
 
