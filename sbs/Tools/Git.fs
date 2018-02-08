@@ -5,17 +5,26 @@ open Helpers.Exec
 open Helpers.Collections
 open Helpers.IO
 
+
+[<RequireQualifiedAccess>]
+type private Branch =
+    | None
+    | Default
+    | Named of string
+
+
 let Clone (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (shallow : bool) (branch : string option) =
     let gitBranch = match branch with
-                    | Some name -> let chkBranchArgs = sprintf "ls-remote --heads %s %s" repo.Uri name
-                                   match Exec "git" chkBranchArgs wsDir Map.empty |> IsError with
-                                   | true -> Some "master"
-                                   | false -> Some name
-                    | None -> None
+                    | Some name -> let chkBranchArgs = sprintf "ls-remote --exit-code --heads %s %s" repo.Uri name
+                                   match ExecGetOutput "git" chkBranchArgs wsDir Map.empty |> IsError with
+                                   | true -> Branch.Default
+                                   | false -> Branch.Named name
+                    | None -> Branch.None
 
     let br = match gitBranch with
-             | Some name -> sprintf "--branch %s --single-branch" name
-             | None -> "--no-single-branch"
+             | Branch.None -> "--no-single-branch"
+             | Branch.Default -> "--single-branch"
+             | Branch.Named name -> sprintf "--branch %s --single-branch" name
     let depth = shallow ? ("--depth=1", "")
     let targetDir = wsDir |> GetDirectory repo.Name
     let args = sprintf @"clone %s %s %s %A" repo.Uri br depth targetDir.FullName
