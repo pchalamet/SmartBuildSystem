@@ -11,8 +11,9 @@ let private usageContent() =
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
         [MainCommand.Fetch], "fetch : fetch all branches on all repositories"
         [MainCommand.Pull], "pull [--only] <repository...> : pull (ff-only) on all repositories"
-        [MainCommand.Build], "build [--debug] <view> : build a repository" 
-        [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" 
+        [MainCommand.Build], "build [--debug] <view> : build a view" 
+        [MainCommand.Build], "rebuild [--debug] <view> : rebuild a view" 
+        [MainCommand.Build], "publish [--debug] <view> : publish apps in view" 
         [MainCommand.Open], "open <view> : open view with your favorite ide" 
         [MainCommand.Exec], "exec <cmd> :  execute command for each repository (variables: SBS_NAME, SBS_PATH, SBS_URL, SBS_WKS)"
         [MainCommand.Doctor], "doctor : check workspace consistency" ]

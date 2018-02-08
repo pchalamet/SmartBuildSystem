@@ -10,6 +10,7 @@ let processMain argv =
     | Command.Checkout info -> Commands.Sources.Checkout info
     | Command.View info -> Commands.View.Create info
     | Command.Build info -> Commands.View.Build info
+    | Command.Publish info -> Commands.View.Publish info
     | Command.Usage -> Commands.Help.Usage MainCommand.Unknown
     | Command.Exec info -> Commands.Workspace.Exec info
     | Command.Open info -> Commands.View.Open info

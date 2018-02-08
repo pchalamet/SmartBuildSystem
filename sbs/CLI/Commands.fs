@@ -21,6 +21,10 @@ type BuildView =
       Config : string
       Clean : bool }
 
+type PublishView =
+    { Name : string 
+      Config : string }
+
 type OpenView =
     { Name : string }
 
@@ -39,6 +43,7 @@ type MainCommand =
     | Checkout
     | View
     | Build
+    | Publish
     | Exec
     | Open
     | Fetch
@@ -55,6 +60,7 @@ type Command =
     | Checkout of CheckoutRepositories
     | View of CreateView
     | Build of BuildView
+    | Publish of PublishView
     | Exec of ExecCommand
     | Error of MainCommand
     | Open of OpenView

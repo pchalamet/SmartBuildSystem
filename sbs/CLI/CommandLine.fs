@@ -1,6 +1,7 @@
 ﻿
 module CLI.CommandLine
 open Commands
+open System.IO
 
 type private TokenOption =
     | Only
@@ -21,6 +22,7 @@ type private Token =
     | Clone
     | View
     | Build
+    | Publish
     | Rebuild
     | Checkout
     | Exec
@@ -37,6 +39,7 @@ let private (|Token|_|) token =
     | "clone" -> Some Token.Clone
     | "view" -> Some Token.View
     | "build" -> Some Token.Build
+    | "publish" -> Some Token.Publish
     | "rebuild" -> Some Token.Rebuild
     | "checkout" -> Some Token.Checkout
     | "exec" -> Some Token.Exec
@@ -96,6 +99,13 @@ let rec private commandBuild clean config args =
                                       Config = config }
     | _ -> Command.Error MainCommand.Build
 
+let rec private commandPublish config args =
+    match args with
+    | TokenOption TokenOption.Debug :: tail -> tail |> commandPublish "Debug" 
+    | [Param name] -> Command.Publish { Name = name 
+                                        Config = config }
+    | _ -> Command.Error MainCommand.Publish
+
 let private commandExec args =
     match args with
     | [Param cmd] -> Command.Exec { Command = cmd }
@@ -131,6 +141,7 @@ let Parse (args : string list) : Command =
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false true
     | Token Token.View :: cmdArgs -> cmdArgs |> commandView true
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
+    | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Release"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec

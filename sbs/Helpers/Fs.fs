@@ -15,6 +15,9 @@ let EnsureExists (dir : DirectoryInfo) =
     if dir.Exists |> not then dir.Create()
     dir
 
+let Delete (dir : DirectoryInfo) =
+    if dir.Exists then dir.Delete(true)
+
 let Exists (dir : DirectoryInfo) =
     dir.Exists
 

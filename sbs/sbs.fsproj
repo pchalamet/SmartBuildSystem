@@ -32,7 +32,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>clone --shallow manage</StartArguments>
+    <StartArguments>publish --debug dmp</StartArguments>
     <StartWorkingDirectory>D:\src\smart3</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -45,8 +45,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartWorkingDirectory>d:\src\build\tutu</StartWorkingDirectory>
-    <StartArguments>clone --shallow manage</StartArguments>
+    <StartWorkingDirectory>d:\src\smart3</StartWorkingDirectory>
+    <StartArguments>publish --debug dmp</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -92,6 +92,8 @@
     <Compile Include="Helpers\Xml.fs" />
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
+    <Compile Include="Configuration\Manifest.fs" />
+    <Compile Include="Tools\Publish.fs" />
     <Compile Include="Tools\MsBuild.fs" />
     <Compile Include="Tools\Git.fs" />
     <Compile Include="CLI\Commands.fs" />
@@ -114,6 +116,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
