@@ -6,13 +6,13 @@ open System.IO
 type private TokenOption =
     | Only
     | Shallow
-    | Debug
+    | Release
     
 let private (|TokenOption|_|) token =
     match token with
     | "--only" -> Some TokenOption.Only
     | "--shallow" -> Some TokenOption.Shallow
-    | "--debug" -> Some TokenOption.Debug
+    | "--release" -> Some TokenOption.Release
     | _ -> None
 
 type private Token =
@@ -93,7 +93,7 @@ let rec commandView deps args =
 
 let rec private commandBuild clean config args =
     match args with
-    | TokenOption TokenOption.Debug :: tail -> tail |> commandBuild clean "Debug" 
+    | TokenOption TokenOption.Release :: tail -> tail |> commandBuild clean "Release" 
     | [Param name] -> Command.Build { Name = name 
                                       Clean = clean
                                       Config = config }
@@ -101,7 +101,7 @@ let rec private commandBuild clean config args =
 
 let rec private commandPublish config args =
     match args with
-    | TokenOption TokenOption.Debug :: tail -> tail |> commandPublish "Debug" 
+    | TokenOption TokenOption.Release :: tail -> tail |> commandPublish "Release" 
     | [Param name] -> Command.Publish { Name = name 
                                         Config = config }
     | _ -> Command.Error MainCommand.Publish
@@ -140,9 +140,9 @@ let Parse (args : string list) : Command =
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone false true
     | Token Token.View :: cmdArgs -> cmdArgs |> commandView true
-    | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Release"
-    | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Release"
-    | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Release"
+    | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Debug"
+    | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Debug"
+    | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Debug"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
