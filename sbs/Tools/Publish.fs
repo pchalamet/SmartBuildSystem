@@ -23,7 +23,7 @@ let private sniffProjectType (folder : DirectoryInfo) =
 
 
 let private publishArtifact (wsDir : DirectoryInfo) (sourceFolder : DirectoryInfo) (artifactName : string) (appName : string) =
-    let targetFile = wsDir |> GetDirectory "apps"
+    let targetFile = wsDir |> GetDirectory ".apps"
                            |> GetDirectory appName
                            |> EnsureExists
                            |> GetFile (sprintf "%s.zip" artifactName)
@@ -39,7 +39,7 @@ let private publishAppMsBuild wsDir (project : FileInfo) config app =
     if output |> Exists |> not then failwithf "Can't find output for application %A" app
     if config |> Exists |> not then failwithf "Can't find configurations for application %A" app
 
-    wsDir |> GetDirectory "apps"
+    wsDir |> GetDirectory ".apps"
           |> GetDirectory app
           |> Delete
 
