@@ -36,7 +36,7 @@ let Clone (info : CLI.Commands.CloneRepository) =
         let repoDir = wsDir |> Fs.GetDirectory repo.Name
         if repoDir.Exists |> not then
             Helpers.Console.PrintInfo (sprintf "Cloning repository %A" repo.Name) 
-            Tools.Git.Clone repo wsDir info.Shallow |> Helpers.IO.CheckResponseCode
+            Tools.Git.Clone repo wsDir info.Shallow info.Branch |> Helpers.IO.CheckResponseCode
 
     processRepositories (info.Patterns |> Set.ofList) info.Dependencies doClone Set.empty |> ignore
 

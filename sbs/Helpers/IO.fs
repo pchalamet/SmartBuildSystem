@@ -31,6 +31,10 @@ let AndThen f execResult =
     | Some _ -> execResult
     | None -> f()
 
+let IsError execResult =
+    let res = execResult |> resultToError
+    res.IsSome
+
 let CheckMultipleResponseCode execResults =
     let errors = execResults |> Seq.choose (fun execResult -> execResult |> resultToError)
     if errors |> Seq.isEmpty |> not then
