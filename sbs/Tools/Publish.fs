@@ -36,6 +36,9 @@ let private publishAppMsBuild wsDir (project : FileInfo) config app =
                                    |> GetDirectory config
     let config = project.Directory |> GetDirectory "config"
 
+    if output |> Exists |> not then failwithf "Can't find output for application %A" app
+    if config |> Exists |> not then failwithf "Can't find configurations for application %A" app
+
     wsDir |> GetDirectory "apps"
           |> GetDirectory app
           |> Delete
