@@ -32,8 +32,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>publish holisticyieldfloorapi</StartArguments>
-    <StartWorkingDirectory>D:\src\smart3</StartWorkingDirectory>
+    <StartArguments>publish dmp</StartArguments>
+    <StartWorkingDirectory>D:\src\smart4</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -110,6 +110,9 @@
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="paket.references" />
+    <Content Include="D:\src\tools\SmartBuildSystem\sbs\publish.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

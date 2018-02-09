@@ -36,3 +36,7 @@ let rec private workspaceFolderSearch (dir : DirectoryInfo) =
 
 let WorkspaceDir () =
     Fs.CurrentDir() |> workspaceFolderSearch
+    
+let SbsDir () =
+    let fbAssembly = getAssembly().Location |> FileInfo
+    fbAssembly.Directory

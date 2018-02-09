@@ -34,19 +34,31 @@ let private publishArtifact (wsDir : DirectoryInfo) (sourceFolder : DirectoryInf
 
 
 let private publishAppMsBuild wsDir (project : FileInfo) config app =
-    let output = project.Directory |> GetDirectory "bin"
-                                   |> GetDirectory config
-    let config = project.Directory |> GetDirectory "config"
-
-    if output |> Exists |> not then failwithf "Can't find output for application %A" app
-    if config |> Exists |> not then failwithf "Can't find configurations for application %A" app
-
     wsDir |> GetDirectory ".apps"
           |> GetDirectory app
           |> Delete
 
+    let publishTarget = Helpers.Env.SbsDir() |> GetFile "publish.targets"
+    let tmpPublishTarget = project.Directory |> GetFile "tmp.targets"
+    publishTarget.CopyTo(tmpPublishTarget.FullName, true) |> ignore
+    let output = wsDir |> GetDirectory ".apps"
+                       |> GetDirectory app
+                       |> GetDirectory "tmp"
+    let publishArgs = sprintf "/t:SBSPublish /p:SBSApp=%A /p:SBSProject=%A /p:SBSTargetFolder=%A %A" 
+                              app 
+                              project.FullName 
+                              output.FullName
+                              tmpPublishTarget.FullName
+    Exec "msbuild" publishArgs project.Directory Map.empty |> CheckResponseCode
+    
+    let config = project.Directory |> GetDirectory "config"
+
+    if config |> Exists |> not then failwithf "Can't find configurations for application %A" app
+
     publishArtifact wsDir output "app" app
     publishArtifact wsDir config "config" app
+    output |> Delete
+    tmpPublishTarget.Delete()
 
 let private publishAppMsBuildSdk wsDir (project : FileInfo) config target app =
     let publishArgs = sprintf "publish --no-restore --configuration %s %A" config project.FullName
