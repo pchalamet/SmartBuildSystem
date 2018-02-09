@@ -110,7 +110,7 @@
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="paket.references" />
-    <Content Include="D:\src\tools\SmartBuildSystem\sbs\publish.targets">
+    <Content Include="publish.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
