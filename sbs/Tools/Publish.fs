@@ -39,7 +39,7 @@ let private publishAppMsBuild wsDir (project : FileInfo) config app =
           |> Delete
 
     let publishTarget = Helpers.Env.SbsDir() |> GetFile "publish.targets"
-    let tmpPublishTarget = project.Directory |> GetFile "tmp.targets"
+    let tmpPublishTarget = project.Directory |> GetFile (sprintf "%s.publish.targets" project.Name)
     publishTarget.CopyTo(tmpPublishTarget.FullName, true) |> ignore
     let output = wsDir |> GetDirectory ".apps"
                        |> GetDirectory app
