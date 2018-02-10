@@ -39,16 +39,11 @@ type PullRepositories =
 [<RequireQualifiedAccess>]
 type MainCommand =
     | Usage
-    | Init
-    | Clone
-    | Checkout
-    | View
+    | Workspace
     | Build
     | Publish
     | Exec
     | Open
-    | Fetch
-    | Pull
     | Doctor
     | Unknown
 

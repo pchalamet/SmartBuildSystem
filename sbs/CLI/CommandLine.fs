@@ -72,30 +72,30 @@ let private commandInit args =
     match args with
     | [Param path]
         -> Command.Init { Path = path }
-    | _ -> Command.Error MainCommand.Init
+    | _ -> Command.Error MainCommand.Workspace
 
 let rec private commandClone branch shallow deps args =
     match args with
     | TokenOption TokenOption.Shallow :: tail -> tail |> commandClone branch true deps
     | TokenOption TokenOption.Branch :: Param name :: tail -> tail |> commandClone (Some name) true deps
     | TokenOption TokenOption.Only :: tail -> tail |> commandClone branch shallow false
-    | [] -> Command.Error MainCommand.Clone
+    | [] -> Command.Error MainCommand.Workspace
     | Params patterns -> Command.Clone { Patterns = patterns
                                          Shallow = shallow
                                          Dependencies = deps 
                                          Branch = branch }
-    | _ -> Command.Error MainCommand.Clone
+    | _ -> Command.Error MainCommand.Workspace
 
 let private commandCheckout args =
     match args with
     | [Param branch] -> Command.Checkout { Branch = branch }
-    | _ -> Command.Error MainCommand.Checkout
+    | _ -> Command.Error MainCommand.Workspace
 
 let rec commandView deps args =
     match args with
     | TokenOption TokenOption.Only :: tail -> tail |> commandView true
     | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
-    | _ -> Command.Error MainCommand.View
+    | _ -> Command.Error MainCommand.Workspace
 
 let rec private commandBuild clean config args =
     match args with
@@ -125,14 +125,14 @@ let private commandOpen args =
 let private commandFetch args =
     match args with
     | [] -> Command.Fetch
-    | _ -> Command.Error MainCommand.Fetch
+    | _ -> Command.Error MainCommand.Workspace
 
 let rec private commandPull deps args =
     match args with
     | TokenOption TokenOption.Only :: tail -> tail |> commandPull false
     | Params patterns -> Command.Pull { Dependencies = deps
                                         Patterns = patterns }
-    | _ -> Command.Error MainCommand.Pull
+    | _ -> Command.Error MainCommand.Workspace
 
 let private commandDoctor args =
     match args with

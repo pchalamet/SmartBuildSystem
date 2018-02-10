@@ -5,12 +5,12 @@ open CLI.Commands
 let private usageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
-        [MainCommand.Init], "init <folder> : initialize workspace"
-        [MainCommand.Clone], "clone [--only] [--shallow] [--branch name] <repository...> : clone repositories using wildcards"
-        [MainCommand.View], "view [--only] <name> <repository...> : create a solution with select repositories"
-        [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
-        [MainCommand.Fetch], "fetch : fetch all branches on all repositories"
-        [MainCommand.Pull], "pull [--only] <repository...> : pull (ff-only) on all repositories"
+        [MainCommand.Workspace], "init <folder> : initialize workspace"
+        [MainCommand.Workspace], "clone [--only] [--shallow] [--branch name] <repository...> : clone repositories using wildcards"
+        [MainCommand.Workspace], "checkout <branch> : checkout given branch on all repositories"
+        [MainCommand.Workspace], "fetch : fetch all branches on all repositories"
+        [MainCommand.Workspace], "pull [--only] <repository...> : pull (ff-only) on all repositories"
+        [MainCommand.Build], "view [--only] <name> <repository...> : create a solution with select repositories"
         [MainCommand.Build], "build [--release] <view> : build a view" 
         [MainCommand.Build], "rebuild [--release] <view> : rebuild a view" 
         [MainCommand.Build], "publish [--release] <view> : publish apps in view" 
