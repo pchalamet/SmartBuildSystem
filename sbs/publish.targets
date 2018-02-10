@@ -1,0 +1,33 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SBSProject)"/>
+  
+  <PropertyGroup>
+    <SBSIsWebProject>false</SBSIsWebProject>
+    <SBSIsWebProject Condition="'$(OutputType)'=='library' and '$(WebProjectOutputDir)' != ''">true</SBSIsWebProject>
+    <SBSIsTestProject>false</SBSIsTestProject>
+    <SBSIsTestProject Condition="'$(OutputType)'=='library' and ($(MSBuildProjectName.EndsWith('.Test')) or $(MSBuildProjectName.EndsWith('.Tests'))) and !$(SBSIsWebProject)">true</SBSIsTestProject>
+    <SBSIsLibrary >false</SBSIsLibrary>
+    <SBSIsLibrary Condition="'$(OutputType)'=='library' and !$(SBSIsWebProject) and !$(SBSIsTestProject)">true</SBSIsLibrary>
+
+    <SBSApp>*** undefined ***</SBSApp>
+    <SBSTargetFolder>*** undefined ***</SBSTargetFolder>
+    <SBSBinFolder>$(SBSTargetFolder)\</SBSBinFolder>
+    <SBSBinFolder Condition="$(SBSIsWebProject)">$(SBSTargetFolder)\bin\</SBSBinFolder>
+  </PropertyGroup>
+
+  <Target Name="SBSPublish">
+    <Copy SourceFiles="@(Content)" 
+          DestinationFolder="$(SBSTargetFolder)\%(Content.RelativeDir)" 
+          SkipUnchangedFiles="true" />
+
+    <CreateItem Include="$(OutputPath)\**\*.*">
+      <Output TaskParameter="Include" 
+              ItemName="Binaries"/>
+    </CreateItem>
+    
+    <Copy SourceFiles="@(Binaries)" 
+          DestinationFolder="$(SBSBinFolder)%(Binaries.RecursiveDir)" 
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

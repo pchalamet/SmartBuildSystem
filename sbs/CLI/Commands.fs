@@ -6,7 +6,8 @@ type InitWorkspace =
 type CloneRepository =
     { Patterns : string list
       Shallow : bool
-      Dependencies : bool }
+      Dependencies : bool 
+      Branch : string option }
 
 type CheckoutRepositories =
     { Branch : string }
@@ -21,11 +22,19 @@ type BuildView =
       Config : string
       Clean : bool }
 
+type PublishView =
+    { Name : string 
+      Config : string }
+
 type OpenView =
     { Name : string }
 
 type ExecCommand =
     { Command : string }
+
+type PullRepositories =
+    { Dependencies : bool
+      Patterns : string list }
 
 [<RequireQualifiedAccess>]
 type MainCommand =
@@ -35,6 +44,7 @@ type MainCommand =
     | Checkout
     | View
     | Build
+    | Publish
     | Exec
     | Open
     | Fetch
@@ -51,9 +61,10 @@ type Command =
     | Checkout of CheckoutRepositories
     | View of CreateView
     | Build of BuildView
+    | Publish of PublishView
     | Exec of ExecCommand
     | Error of MainCommand
     | Open of OpenView
     | Fetch
-    | Pull
+    | Pull of PullRepositories
     | Doctor

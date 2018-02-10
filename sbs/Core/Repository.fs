@@ -24,7 +24,7 @@ let private scanRepositoryDependencies (repoDir : DirectoryInfo) =
         let refs = xdoc.Descendants() 
                         |> Seq.filter (fun x -> x.Name.LocalName = "ProjectReference")
                         |> Seq.map (fun x -> !> x.Attribute(NsNone + "Include") : string)
-                        |> Set
+                        |> Seq.distinct
                         |> Seq.map (fun x -> prjFile, prjFile.Directory |> Fs.GetFile x)
         refs
 

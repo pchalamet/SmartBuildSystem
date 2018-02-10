@@ -18,6 +18,8 @@
     <Compile Include="Helpers\Xml.fs" />
     <Compile Include="Configuration\Master.fs" />
     <Compile Include="Configuration\Repository.fs" />
+    <Compile Include="Configuration\Manifest.fs" />
+    <Compile Include="Tools\Publish.fs" />
     <Compile Include="Tools\MsBuild.fs" />
     <Compile Include="Tools\Git.fs" />
     <Compile Include="CLI\Commands.fs" />
@@ -37,6 +39,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sbs.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="publish.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

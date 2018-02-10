@@ -16,7 +16,7 @@ let Init (cmd : CLI.Commands.InitWorkspace) =
     // first clone master repository
     let masterRepo = { Configuration.Master.Repository.Name = ""
                        Configuration.Master.Repository.Uri = Helpers.Env.MasterRepository () }
-    Tools.Git.Clone masterRepo wsDir false |> Helpers.IO.CheckResponseCode
+    Tools.Git.Clone masterRepo wsDir false None |> Helpers.IO.CheckResponseCode
 
     let currentDir = System.Environment.CurrentDirectory
     try
@@ -25,7 +25,8 @@ let Init (cmd : CLI.Commands.InitWorkspace) =
         // delegate to clone then to get dependencies
         let cloneRepo = { CLI.Commands.CloneRepository.Patterns = [masterRepo.Name]
                           CLI.Commands.CloneRepository.Shallow = false
-                          CLI.Commands.CloneRepository.Dependencies = true }
+                          CLI.Commands.CloneRepository.Dependencies = true 
+                          CLI.Commands.CloneRepository.Branch = None }
         cloneRepo |> Commands.Sources.Clone
     finally
         System.Environment.CurrentDirectory <- currentDir

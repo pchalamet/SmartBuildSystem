@@ -6,13 +6,14 @@ let private usageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
         [MainCommand.Init], "init <folder> : initialize workspace"
-        [MainCommand.Clone], "clone [--only] [--shallow] <repository...> : clone repositories using wildcards"
+        [MainCommand.Clone], "clone [--only] [--shallow] [--branch name] <repository...> : clone repositories using wildcards"
         [MainCommand.View], "view [--only] <name> <repository...> : create a solution with select repositories"
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
         [MainCommand.Fetch], "fetch : fetch all branches on all repositories"
-        [MainCommand.Pull], "pull : pull (ff-only) on all repositories"
-        [MainCommand.Build], "build [--debug] <view> : build a repository" 
-        [MainCommand.Build], "rebuild [--debug] <repository> : rebuild a repository" 
+        [MainCommand.Pull], "pull [--only] <repository...> : pull (ff-only) on all repositories"
+        [MainCommand.Build], "build [--release] <view> : build a view" 
+        [MainCommand.Build], "rebuild [--release] <view> : rebuild a view" 
+        [MainCommand.Build], "publish [--release] <view> : publish apps in view" 
         [MainCommand.Open], "open <view> : open view with your favorite ide" 
         [MainCommand.Exec], "exec <cmd> :  execute command for each repository (variables: SBS_NAME, SBS_PATH, SBS_URL, SBS_WKS)"
         [MainCommand.Doctor], "doctor : check workspace consistency" ]
@@ -28,7 +29,7 @@ let Usage (what : MainCommand) =
 
 let private versionContent() =
     let version = Helpers.Env.Version()
-    let versionContent = sprintf "full-build %s" (version.ToString())
+    let versionContent = sprintf "sbs %s" (version.ToString())
     [ versionContent ]
 
 
