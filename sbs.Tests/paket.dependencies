@@ -1,4 +1,0 @@
-source http://factory.smartadserver.com/ngsvr/nuget
-source https://www.nuget.org/api/v2/
-
-nuget System.ValueTuple 4.3.1 restriction: >= net461
