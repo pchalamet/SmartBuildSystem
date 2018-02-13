@@ -11,7 +11,7 @@ let private usageContent() =
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"
         [MainCommand.Fetch], "fetch : fetch all branches on all repositories"
         [MainCommand.Pull], "pull [--only] <repository...> : pull (ff-only) on all repositories"
-        [MainCommand.Build], "build [--release] <view> : build a view" 
+        [MainCommand.Build], "build [--release] [--parallel] <view> : build a view" 
         [MainCommand.Build], "rebuild [--release] <view> : rebuild a view" 
         [MainCommand.Build], "publish [--release] <view> : publish apps in view" 
         [MainCommand.Open], "open <view> : open view with your favorite ide" 

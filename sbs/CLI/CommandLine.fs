@@ -8,6 +8,7 @@ type private TokenOption =
     | Shallow
     | Release
     | Branch
+    | Parallel
     
 let private (|TokenOption|_|) token =
     match token with
@@ -15,6 +16,7 @@ let private (|TokenOption|_|) token =
     | "--shallow" -> Some TokenOption.Shallow
     | "--release" -> Some TokenOption.Release
     | "--branch" -> Some TokenOption.Branch
+    | "--parallel" -> Some TokenOption.Parallel
     | _ -> None
 
 type private Token =
@@ -97,12 +99,14 @@ let rec commandView deps args =
     | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
     | _ -> Command.Error MainCommand.View
 
-let rec private commandBuild clean config args =
+let rec private commandBuild par clean config args =
     match args with
-    | TokenOption TokenOption.Release :: tail -> tail |> commandBuild clean "Release" 
+    | TokenOption TokenOption.Release :: tail -> tail |> commandBuild par clean "Release" 
+    | TokenOption TokenOption.Parallel :: tail -> tail |> commandBuild true clean "Release" 
     | [Param name] -> Command.Build { Name = name 
                                       Clean = clean
-                                      Config = config }
+                                      Config = config 
+                                      Parallel = par }
     | _ -> Command.Error MainCommand.Build
 
 let rec private commandPublish config args =
@@ -146,9 +150,9 @@ let Parse (args : string list) : Command =
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone None false true
     | Token Token.View :: cmdArgs -> cmdArgs |> commandView true
-    | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false "Debug"
+    | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false false "Debug"
     | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Debug"
-    | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild true "Debug"
+    | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild false true "Debug"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen

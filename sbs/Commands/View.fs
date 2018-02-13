@@ -30,7 +30,7 @@ let Build (cmd : CLI.Commands.BuildView) =
     if sln.Exists |> not then failwithf "View %A does not exist" cmd.Name
 
     sprintf "Building view %A" cmd.Name |> Helpers.Console.PrintInfo
-    Tools.MsBuild.Build cmd.Clean cmd.Config wsDir sln
+    Tools.MsBuild.Build cmd.Clean cmd.Parallel cmd.Config wsDir sln
 
 let Publish (cmd : CLI.Commands.PublishView) =
     let wsDir = Env.WorkspaceDir()

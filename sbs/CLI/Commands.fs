@@ -20,7 +20,8 @@ type CreateView =
 type BuildView =
     { Name : string 
       Config : string
-      Clean : bool }
+      Clean : bool 
+      Parallel : bool }
 
 type PublishView =
     { Name : string 
