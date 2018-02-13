@@ -4,6 +4,7 @@ open Helpers.Fs
 open Helpers.Collections
 open Core.Repository
 open System.IO
+open Helpers.IO
 
 let rec private innerProcessRepositories (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (patterns : string Set) (deps : bool) action processedRepositories =
     let repos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) patterns
@@ -47,10 +48,10 @@ let Checkout (info : CLI.Commands.CheckoutRepositories) =
     let allres = config.Repositories 
                     |> Seq.filter (fun x -> wsDir |> GetDirectory x.Name |> Exists)
                     |> Seq.map (fun x -> x, Tools.Git.Checkout x wsDir info.Branch)
-    for (repo,res) in allres do
-        if res.Code <> 0 then Helpers.Console.PrintError repo.Name
-        else Helpers.Console.PrintSuccess repo.Name
-
+    for (repo, hasError) in allres do
+        match hasError with
+        | Some err -> err |> Helpers.Console.PrintError
+        | None -> repo.Name |> Helpers.Console.PrintSuccess
 
 let Fetch () =
     let wsDir = Env.WorkspaceDir()

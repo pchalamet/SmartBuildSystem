@@ -7,7 +7,7 @@ type Result =
       Out: string list
       Error: string list }
 
-let private resultToError execResult =
+let ResultToError execResult =
     if execResult.Code <> 0 then 
         [sprintf "Operation '%s' failed with error %d" execResult.Info execResult.Code]
             @ ("Out:" :: execResult.Out) 
@@ -17,26 +17,26 @@ let private resultToError execResult =
     else None
 
 let GetOutput execResult =
-    match execResult |> resultToError with
+    match execResult |> ResultToError with
     | Some error -> failwith error
     | None -> execResult.Out
 
 let CheckResponseCode execResult =
-    match execResult |> resultToError with
+    match execResult |> ResultToError with
     | Some error -> failwith error
     | None -> ()
 
 let AndThen f execResult =
-    match execResult |> resultToError with
+    match execResult |> ResultToError with
     | Some _ -> execResult
     | None -> f()
 
 let IsError execResult =
-    let res = execResult |> resultToError
+    let res = execResult |> ResultToError
     res.IsSome
 
 let CheckMultipleResponseCode execResults =
-    let errors = execResults |> Seq.choose (fun execResult -> execResult |> resultToError)
+    let errors = execResults |> Seq.choose (fun execResult -> execResult |> ResultToError)
     if errors |> Seq.isEmpty |> not then
         errors |> String.concat System.Environment.NewLine |> failwith
   

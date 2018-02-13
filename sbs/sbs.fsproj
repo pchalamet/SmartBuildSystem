@@ -32,8 +32,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>publish dmp</StartArguments>
-    <StartWorkingDirectory>D:\src\smart4</StartWorkingDirectory>
+    <StartArguments>checkout feature/debug-release</StartArguments>
+    <StartWorkingDirectory>D:\src\smart5</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,8 +45,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartWorkingDirectory>d:\src\smart3</StartWorkingDirectory>
-    <StartArguments>publish --debug dmp</StartArguments>
+    <StartWorkingDirectory>d:\src\smart5</StartWorkingDirectory>
+    <StartArguments>checkout feature/debug-release</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

@@ -31,9 +31,18 @@ let Clone (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (shal
     Exec "git" args wsDir Map.empty
 
 let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (version : string) =
-    let args = sprintf "checkout %A" version
     let targetDir = wsDir |> GetDirectory repo.Name
-    Exec "git" args targetDir Map.empty
+    let chkVersionArgs = sprintf "rev-parse --verify --quiet %s" version
+    let versionErr = ExecGetOutput "git" chkVersionArgs targetDir Map.empty
+    match versionErr |> IsError with
+    | false -> let currBranchArgs = sprintf "rev-parse --abbrev-ref HEAD"
+               let currBrErr = ExecGetOutput "git" currBranchArgs targetDir Map.empty
+               if currBrErr.Out <> [ version ] then
+                   let args = sprintf "checkout %A" version
+                   Exec "git" args targetDir Map.empty |> ResultToError
+               else
+                    None
+    | _ -> sprintf "Version %A does not exists in repository %A" version repo.Name |> Some
 
 let Fetch (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) =
     let args = sprintf "fetch --all"
