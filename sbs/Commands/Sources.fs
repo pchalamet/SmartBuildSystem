@@ -45,13 +45,14 @@ let Clone (info : CLI.Commands.CloneRepository) =
 let Checkout (info : CLI.Commands.CheckoutRepositories) =
     let wsDir = Env.WorkspaceDir()
     let config = wsDir |> Configuration.Master.Load
-    let allres = config.Repositories 
+    let repos = config.Repositories 
                     |> Seq.filter (fun x -> wsDir |> GetDirectory x.Name |> Exists)
-                    |> Seq.map (fun x -> x, Tools.Git.Checkout x wsDir info.Branch)
-    for (repo, hasError) in allres do
+    for repo in repos do
+        repo.Name |> Helpers.Console.PrintInfo
+        let hasError = Tools.Git.Checkout repo wsDir info.Branch
         match hasError with
         | Some err -> err |> Helpers.Console.PrintError
-        | None -> repo.Name |> Helpers.Console.PrintSuccess
+        | None -> ()
 
 let Fetch () =
     let wsDir = Env.WorkspaceDir()
