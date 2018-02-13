@@ -43,7 +43,7 @@ let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (v
                else
                     printfn "Your branch is up to date with '%s'." version
                     None
-    | _ -> sprintf "Version %A does not exists in repository %A" version repo.Name |> Some
+    | _ -> sprintf "'%s' not found." version |> Some
 
 let Fetch (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) =
     let args = sprintf "fetch --all"

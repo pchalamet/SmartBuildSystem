@@ -6,6 +6,7 @@ open Helpers.Xml
 open Helpers.Fs
 open Helpers.Exec
 open Helpers.IO
+open System
 
 
 type ProjectType =
@@ -91,7 +92,7 @@ let private publishApp wsDir (projectFolder : DirectoryInfo) config name =
 
 let private loadView (wsDir : DirectoryInfo) viewName =
     let viewFile = wsDir |> GetFile (sprintf "%s.view" viewName)
-    let repos = File.ReadLines(viewFile.FullName)
+    let repos = File.ReadLines(viewFile.FullName) |> Seq.map (fun x -> x.Split([|" <- "|], StringSplitOptions.RemoveEmptyEntries).[0])
     repos
 
 
