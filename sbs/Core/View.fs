@@ -6,15 +6,11 @@ open Core.Repository
 open System.Collections.Generic
 
 
-
-let private gatherRepoDependencies wsDir (config : Configuration.Master.Configuration) (repo : Configuration.Master.Repository) =
-    { RepositoryName = repo.Name }.FindDependencies wsDir config |> Set.toSeq
-
 let rec private gatherDependencies wsDir (config : Configuration.Master.Configuration) (repos : Configuration.Master.Repository set) (processedRepos : Configuration.Master.Repository set) =
     if repos <> Set.empty then
-        printfn "Scanning %s" (System.String.Join(", ", repos |> Seq.map (fun x -> x.Name)))
+        System.String.Join(", ", repos |> Seq.map (fun x -> x.Name)) |> Helpers.Console.PrintInfo
 
-        let deps = repos |> Seq.fold (fun s t -> s |> Map.add t (gatherRepoDependencies wsDir config t)) Map.empty
+        let deps = repos |> Seq.fold (fun s t -> s |> Map.add t (FindDependencies wsDir config t.Name)) Map.empty
         let newRepos = deps |> Seq.map (fun x -> x.Value)
                             |> Seq.concat
                             |> Set
@@ -38,13 +34,13 @@ type View =
     { Name : string
       Patterns : string set
       WithDependencies : bool
-      Dependencies : Map<Configuration.Master.Repository, Configuration.Master.Repository seq>
+      Dependencies : Map<Configuration.Master.Repository, Configuration.Master.Repository set>
       Projects : string set }
 with
     static member Materialize (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (name : string) (patterns : string set) (withDependencies : bool) =
         let selectedRepos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) patterns
         let dependencies = if withDependencies then gatherDependencies wsDir config selectedRepos Set.empty
-                           else selectedRepos |> Seq.map (fun x -> x, Seq.empty) |> Map
+                           else selectedRepos |> Seq.map (fun x -> x, Set.empty) |> Map
         let repos = dependencies |> Seq.map (fun x -> x.Key)
         let projects = repos |> Seq.fold (fun s t -> Seq.append s (gatherProjects wsDir t)) Seq.empty
                              |> Seq.map (fun x -> x.FullName)

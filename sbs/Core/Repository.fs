@@ -35,30 +35,26 @@ let private scanRepositoryDependencies (repoDir : DirectoryInfo) =
     repositories
 
 
+let FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) name =
+    // validate repo name
+    let repo = match masterConfig.GetRepository name with
+                | Some x -> x
+                | None -> failwithf "Repository %A does not exist" name
 
-type Repository =
-    { RepositoryName : string }
-with
-    member this.FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) =
-        // validate repo name
-        let repo = match masterConfig.GetRepository this.RepositoryName with
-                   | Some x -> x
-                   | None -> failwithf "Repository %A does not exist" this.RepositoryName
+    let repoDir = wsDir |> Fs.GetDirectory repo.Name
+    let autoDeps, dependencies = repoDir |> Repository.Load
 
-        let repoDir = wsDir |> Fs.GetDirectory repo.Name
-        let autoDeps, dependencies = repoDir |> Repository.Load
+    let autoDependencies = if autoDeps then scanRepositoryDependencies repoDir
+                            else Seq.empty
 
-        let autoDependencies = if autoDeps then scanRepositoryDependencies repoDir
-                               else Seq.empty
+    let getRepo x =
+        match masterConfig.GetRepository x with
+        | Some repo -> repo
+        | _ -> failwithf "Repository %A is an unknown dependency of %A" x name
 
-        let getRepo x =
-            match masterConfig.GetRepository x with
-            | Some repo -> repo
-            | _ -> failwithf "Repository %A is an unknown dependency of %A" x this.RepositoryName
-
-        let dependencies = autoDependencies 
-                                |> Seq.append dependencies
-                                |> Seq.filter (fun x -> x <> this.RepositoryName)
-                                |> Set
-                                |> Set.map getRepo
-        dependencies
+    let dependencies = autoDependencies 
+                            |> Seq.append dependencies
+                            |> Seq.filter (fun x -> x <> name)
+                            |> Set
+                            |> Set.map getRepo
+    dependencies

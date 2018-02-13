@@ -14,7 +14,7 @@ let rec private innerProcessRepositories (wsDir : DirectoryInfo) (config : Confi
 
     let newProcessedRepositories = 
         if deps && repos <> Set.empty then
-            let newPatterns = (repos |> Set.map (fun x -> { RepositoryName = x.Name }.FindDependencies wsDir config)
+            let newPatterns = (repos |> Set.map (fun x -> FindDependencies wsDir config x.Name)
                                      |> Set.unionMany)
                               |> Set.substract processedRepositories
                               |> Set.substract repos
