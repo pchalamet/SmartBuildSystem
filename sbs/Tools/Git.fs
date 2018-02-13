@@ -41,6 +41,7 @@ let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (v
                    let args = sprintf "checkout %A" version
                    Exec "git" args targetDir Map.empty |> ResultToError
                else
+                    printfn "Your branch is up to date with '%s'." version
                     None
     | _ -> sprintf "Version %A does not exists in repository %A" version repo.Name |> Some
 
