@@ -68,6 +68,7 @@ let private publishAppMsBuildSdk wsDir (project : FileInfo) config target app =
     let output = project.Directory |> GetDirectory "bin"
                                    |> GetDirectory config
                                    |> GetDirectory target
+                                   |> GetDirectory "publish"
     let config = project.Directory |> GetDirectory "config"
 
     if output |> Exists |> not then failwithf "Can't find output for application %A" app
