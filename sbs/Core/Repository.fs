@@ -7,9 +7,20 @@ open System.Xml.Linq
 
 
 
-let private scanRepositoryDependencies (repoDir : DirectoryInfo) =
-    let wsDir = repoDir.Parent
+let findProjects wsDir (repo : Configuration.Master.Repository) =
+    let isValidProject (file : FileInfo) =
+        try
+            let xdoc = XDocument.Load(file.FullName)
+            xdoc.Root.Name.LocalName = "Project"
+        with
+            _ -> false
 
+    let repoDir = wsDir |> Fs.GetDirectory repo.Name
+    repoDir.EnumerateFiles("*.*proj", SearchOption.AllDirectories) |> Seq.filter isValidProject
+   
+
+
+let private scanRepositoryDependencies (wsDir : DirectoryInfo) (repo : Configuration.Master.Repository) =
     let extractRepoFolder ((projectFile, file) : FileInfo * FileInfo) =
         if file.FullName.ToLowerInvariant().StartsWith(wsDir.FullName.ToLowerInvariant()) |> not then 
             failwithf "Invalid path %s in project %A" file.FullName projectFile.FullName
@@ -28,8 +39,7 @@ let private scanRepositoryDependencies (repoDir : DirectoryInfo) =
                         |> Seq.map (fun x -> prjFile, prjFile.Directory |> Fs.GetFile x)
         refs
 
-    let repositories = Project.SupportedProjectExtensions
-                            |> Seq.fold (fun s t -> s |> Seq.append (repoDir.EnumerateFiles("*" + t, SearchOption.AllDirectories))) Seq.empty
+    let repositories = findProjects wsDir repo
                             |> Seq.fold (fun s t -> s |> Seq.append (extractProjectReferences t)) Seq.empty
                             |> Seq.map extractRepoFolder
     repositories
@@ -44,7 +54,7 @@ let FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) n
     let repoDir = wsDir |> Fs.GetDirectory repo.Name
     let autoDeps, dependencies = repoDir |> Repository.Load
 
-    let autoDependencies = if autoDeps then scanRepositoryDependencies repoDir
+    let autoDependencies = if autoDeps then scanRepositoryDependencies wsDir repo
                             else Seq.empty
 
     let getRepo x =

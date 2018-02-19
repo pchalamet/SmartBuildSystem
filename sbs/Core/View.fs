@@ -22,13 +22,6 @@ let rec private gatherDependencies wsDir (config : Configuration.Master.Configur
         Map.empty
 
 
-let private gatherProjects wsDir (repo : Configuration.Master.Repository) =
-    let repoDir = wsDir |> Fs.GetDirectory repo.Name
-    let enumerateExtensions ext = repoDir.EnumerateFiles("*" + ext, SearchOption.AllDirectories)
-    Core.Project.SupportedProjectExtensions
-        |> Seq.fold (fun s t -> Seq.append s (enumerateExtensions t)) Seq.empty
-
-
 
 type View =
     { Name : string
@@ -42,7 +35,7 @@ with
         let dependencies = if withDependencies then gatherDependencies wsDir config selectedRepos Set.empty
                            else selectedRepos |> Seq.map (fun x -> x, Set.empty) |> Map
         let repos = dependencies |> Seq.map (fun x -> x.Key)
-        let projects = repos |> Seq.fold (fun s t -> Seq.append s (gatherProjects wsDir t)) Seq.empty
+        let projects = repos |> Seq.fold (fun s t -> Seq.append s (findProjects wsDir t)) Seq.empty
                              |> Seq.map (fun x -> x.FullName)
                              |> Set.ofSeq
         { Name = name
