@@ -25,12 +25,15 @@ let GenerateSolutionContent (wsDir : string) (projects : FileInfo seq) =
 
         for project in projects do
             let fileName = project.FullName
-            yield sprintf @"Project(""{%s}"") = ""%s"", ""%s"", ""{%s}"""
-                  (project.Extension |> Project.Ext2ProjectType )
-                  (fileName |> Path.GetFileNameWithoutExtension)
-                  fileName
-                  (guids.[fileName])
-            yield "EndProject"
+            let projectType = project.Extension |> Project.Ext2ProjectType
+            match projectType with
+            | Some prjType -> yield sprintf @"Project(""{%s}"") = ""%s"", ""%s"", ""{%s}"""
+                                  prjType
+                                  (fileName |> Path.GetFileNameWithoutExtension)
+                                  fileName
+                                  (guids.[fileName])
+                              yield "EndProject"
+            | None -> sprintf "Unsupported project %A" fileName |> Helpers.Console.PrintError
 
         for repository in repoGuids do
             let repo = repository.Key

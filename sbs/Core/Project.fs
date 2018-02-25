@@ -8,6 +8,4 @@ let private ext2projType = Map [ (".csproj",  "FAE04EC0-301F-11D3-BF4B-00C04F79E
                                  (".dcproj",  "E53339B2-1760-4266-BCC7-CA923CBCF16C")]
 
 let Ext2ProjectType ext =
-    match ext2projType |> Map.tryFind ext with
-    | Some prjType -> prjType
-    | None -> failwithf "Unsupported project type %A" ext
+    ext2projType |> Map.tryFind ext
