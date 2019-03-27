@@ -1,0 +1,5 @@
+﻿repository:
+    auto-dependencies: true
+    dependencies:
+        - infrastructure
+        - service

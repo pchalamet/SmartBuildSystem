@@ -1,86 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblySearchPaths>
-	  {HintPathFromItem};
-	  {TargetFrameworkDirectory};
-	  {RawFileName};
-	</AssemblySearchPaths>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>fc3d0c92-3156-4c21-a4dd-18bcd8622e8a</ProjectGuid>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <RootNamespace>sbs</RootNamespace>
-    <AssemblyName>sbs</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFSharpCoreVersion>4.4.1.0</TargetFSharpCoreVersion>
-    <Name>sbs</Name>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>view internaltools internaltools</StartArguments>
-    <StartWorkingDirectory>D:\src\smart5</StartWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
-    <StartWorkingDirectory>d:\src\smart5</StartWorkingDirectory>
-    <StartArguments>checkout feature/debug-release</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup>
-    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
-  </PropertyGroup>
-  <!-- https://stackoverflow.com/questions/42679193/install-f-4-1-sdk-on-build-server -->
-  <Choose>
-    <When Condition="$(TargetFSharpCoreVersion) &gt;= 4.3.0.0 AND $(TargetFSharpCoreVersion) &lt; 4.3.1.0">
-      <PropertyGroup>
-        <FSharpTargetsPath>$(MSBuildProgramFiles32)\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </When>
-    <When Condition="$(TargetFSharpCoreVersion) &gt;= 4.3.1.0 AND $(TargetFSharpCoreVersion) &lt; 4.4.0.0">
-      <PropertyGroup>
-        <FSharpTargetsPath>$(MSBuildProgramFiles32)\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </When>
-    <When Condition="$(TargetFSharpCoreVersion) &gt;= 4.4.0.0 AND $(TargetFSharpCoreVersion) &lt; 4.4.1.0">
-      <PropertyGroup>
-        <FSharpTargetsPath>$(MSBuildProgramFiles32)\Microsoft SDKs\F#\4.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <FSharpTargetsPath>$(MSBuildProgramFiles32)\Microsoft SDKs\F#\4.1\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  <!-- This is needed for TeamCity where F# SDK is only available via NuGet right now - hopefully can be removed at some point once the SDK is available for install -->
-  <PropertyGroup Condition="!Exists('$(FSharpTargetsPath)')">
-    <FSharpTargetsPath>$(FscToolPath)\Microsoft.FSharp.Targets</FSharpTargetsPath>
-  </PropertyGroup>
-  <Import Project="..\packages\FSharp.Compiler.Tools\build\FSharp.Compiler.Tools.props" />
-  <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <None Include="Examples\manifest.yaml" />
+    <None Include="Examples\repository.yaml" />
+    <None Include="Examples\master.yaml" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Helpers\IO.fs" />
     <Compile Include="Helpers\Fs.fs" />
@@ -107,71 +33,14 @@
     <Compile Include="Commands\View.fs" />
     <Compile Include="Commands\Doctor.fs" />
     <Compile Include="Commands\Help.fs" />
-    <Compile Include="Program.fs" />
     <None Include="App.config" />
-    <Content Include="paket.references" />
     <Content Include="publish.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="FSharp.Configuration" Version="2.0.0-alpha2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7')">
-      <ItemGroup>
-        <Reference Include="FSharp.Core">
-          <HintPath>..\packages\FSharp.Core\lib\net45\FSharp.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7')">
-      <ItemGroup>
-        <Reference Include="SharpYaml">
-          <HintPath>..\packages\SharpYaml\lib\net45\SharpYaml.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3')">
-      <ItemGroup>
-        <Reference Include="System.ValueTuple">
-          <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
-      <ItemGroup>
-        <Reference Include="System.ValueTuple">
-          <HintPath>..\packages\System.ValueTuple\lib\net47\System.ValueTuple.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
 </Project>

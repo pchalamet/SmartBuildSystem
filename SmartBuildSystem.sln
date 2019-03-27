@@ -8,9 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{2C8339
 		paket.dependencies = paket.dependencies
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "sbs", "sbs\sbs.fsproj", "{FC3D0C92-3156-4C21-A4DD-18BCD8622E8A}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "sbs.Tests", "sbs.Tests\sbs.Tests.fsproj", "{4DB60FD6-D981-48FC-91EB-3BE27207BB9E}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "sbs", "sbs\sbs.fsproj", "{FC3D0C92-3156-4C21-A4DD-18BCD8622E8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +20,6 @@ Global
 		{FC3D0C92-3156-4C21-A4DD-18BCD8622E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC3D0C92-3156-4C21-A4DD-18BCD8622E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC3D0C92-3156-4C21-A4DD-18BCD8622E8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4DB60FD6-D981-48FC-91EB-3BE27207BB9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DB60FD6-D981-48FC-91EB-3BE27207BB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DB60FD6-D981-48FC-91EB-3BE27207BB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DB60FD6-D981-48FC-91EB-3BE27207BB9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

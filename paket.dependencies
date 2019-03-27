@@ -1,9 +1,0 @@
-redirects: on
-source https://www.nuget.org/api/v2/
-
-nuget SharpYaml restriction: >= net461
-nuget FSharp.Core restriction: >= net461
-nuget System.ValueTuple restriction: >= net461
-nuget FSharp.Compiler.Tools
-nuget NuGet.CommandLine
-nuget 7-Zip.CommandLine

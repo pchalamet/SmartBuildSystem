@@ -2,12 +2,9 @@
 open System.IO
 open System
 open Helpers
+open FSharp.Configuration
 
-
-type RepositoryConfiguration() = class
-    member val ``auto-dependencies`` : bool = true with get, set 
-    member val dependencies : string array = null with get, set
-end
+type RepositoryConfig = YamlConfig<"Examples/repository.yaml">
 
 
 let Load (repoDir : DirectoryInfo) =
@@ -16,12 +13,10 @@ let Load (repoDir : DirectoryInfo) =
     if repoConfig.Exists |> not then (true, Seq.empty)
     else 
         try
-            use file = System.IO.File.OpenText(repoConfig.FullName)
-            let serializer = new SharpYaml.Serialization.Serializer()
-            let repoConfig = serializer.Deserialize<RepositoryConfiguration>(file)
-            if repoConfig.dependencies |> isNull then failwithf "dependencies list is mandatory"
+            let config = RepositoryConfig()
+            config.Load(repoConfig.FullName)
 
-            (repoConfig.``auto-dependencies``, repoConfig.dependencies |> seq)
+            (config.repository.``auto-dependencies``, config.repository.dependencies |> seq)
         with
             exn -> failwithf "repository.yaml in %A is invalid (%s)" repoDir exn.Message
  

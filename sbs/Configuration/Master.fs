@@ -2,6 +2,10 @@
 open Helpers.Collections
 open Helpers.Fs
 open System.IO
+open FSharp.Configuration
+
+type MasterConfig = YamlConfig<"Examples/master.yaml">
+
 
 [<RequireQualifiedAccess>]
 type Repository =
@@ -15,26 +19,17 @@ with
     member this.GetRepository name =
         this.Repositories |> Seq.tryFind (fun x -> x.Name = name)
 
-type RepositoryConfiguration() = class
-    member val name : string = null with get, set
-    member val uri : string = null with get, set
-end
-
-type MasterConfiguration() = class
-    member val repositories : RepositoryConfiguration array = null with get, set 
-end
-
 
 let Load (wsDir : DirectoryInfo) =
     let masterConfigFile = wsDir |> GetFile "sbs.yaml"
     use file = System.IO.File.OpenText(masterConfigFile.FullName)
-    let serializer = new SharpYaml.Serialization.Serializer()
-    let masterConfig = serializer.Deserialize<MasterConfiguration>(file)
+    let config = MasterConfig()
+    config.Load(masterConfigFile.FullName)
 
-    let convertRepo (repoConfig : RepositoryConfiguration) =
+    let convertRepo (repoConfig : MasterConfig.repositories_Item_Type) =
         if repoConfig.name |> isNull || repoConfig.uri |> isNull then failwithf "sbs.yaml is invalid"
 
         { Repository.Name = repoConfig.name
           Repository.Uri = repoConfig.uri }
 
-    { Configuration.Repositories = masterConfig.repositories |> Seq.map convertRepo |> Set }
+    { Configuration.Repositories = config.repositories |> Seq.map convertRepo |> Set }
