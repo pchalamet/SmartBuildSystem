@@ -14,3 +14,5 @@ all.userprefs
 *.mdb
 artifacts
 paket-files
+out
+.vscode
