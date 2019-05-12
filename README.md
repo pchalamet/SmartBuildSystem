@@ -54,4 +54,4 @@ repository:
 
 # Commands
 You can create a workspace using `sbs init <folder>`.
-Inside this workspace, you can clone all repositories using `sbs clone *`. Note this a wildcard.
+Inside this workspace, you can clone all repositories using `sbs clone *`. Note this is a wildcard.
