@@ -40,6 +40,18 @@ repositories:
       uri: git@github.com:pchalamet/NPolyBool.git                                  
 ````
 
+Inside a repository, a `repository.yaml` file (at root) can provide more informations on dependencies:
+````
+repository:
+    auto-dependencies: true
+    dependencies:
+        - sbs
+        - npolybool
+````
+
+* auto-dependencies: determine dependencies using *.proj files (.net support only)
+* dependencies: list of repositories this repository depends on
+
 # Commands
 You can create a workspace using `sbs init <folder>`.
 Inside this workspace, you can clone all repositories using `sbs clone *`. Note this a wildcard.
