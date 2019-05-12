@@ -31,7 +31,7 @@ Modify `App.config` to link to your master repo. This must be the URL of a valid
 </configuration>
 ````
 
-The repository must contains the `sbs.yaml` file describing all available repositories:
+The repository must contains the `sbs.yaml` (in root) file describing all available repositories:
 ````
 repositories:
     - name: sbs                                                                                  
@@ -40,7 +40,7 @@ repositories:
       uri: git@github.com:pchalamet/NPolyBool.git                                  
 ````
 
-Inside a repository, a `repository.yaml` file (at root) can provide more informations on dependencies:
+Inside a repository, a `repository.yaml` file (in root) can provide more informations on dependencies:
 ````
 repository:
     auto-dependencies: true
