@@ -30,7 +30,7 @@ let IsWorkspaceFolder(wsDir : DirectoryInfo) =
     masterConfig.Exists
 
 let rec private workspaceFolderSearch (dir : DirectoryInfo) =
-    if dir = null || not dir.Exists then failwith "Can't find workspace root directory. Check you are in a workspace."
+    if (dir |> isNull) || (not dir.Exists) then failwith "Can't find workspace root directory. Check you are in a workspace."
     if IsWorkspaceFolder dir then dir
     else workspaceFolderSearch dir.Parent
 
