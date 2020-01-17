@@ -3,12 +3,13 @@ open Helpers.Collections
 open Helpers.Fs
 open System.IO
 
+open YamlDotNet.Serialization
 
 
-
-
+[<CLIMutable>]
+[<RequireQualifiedAccess>]
 type Manifest =
-    { Name : string }
+    { [<YamlMember(Alias="name")>] Name : string }
 
 
 type ManifestConfiguration() = class
@@ -17,12 +18,8 @@ end
 
 
 let Load (file : FileInfo) =
-    { Name = "pouet" }
-    //use file = System.IO.File.OpenText(file.FullName)
-    //let ystm = YamlStream()
-    //ystm.Load(file)
-    //let rootNode = ystm.Documents.[0].RootNode :?> YamlMappingNode
-    //let appNode = rootNode.Children.[YamlScalarNode("app")]   
-    //let appScalarNode = appNode :?> YamlScalarNode
-    //{ Name = appScalarNode.Value }
-    
+    let yaml = System.IO.File.ReadAllText(file.FullName)
+    let deserializer = DeserializerBuilder().Build()
+    let manifest = deserializer.Deserialize<Manifest>(yaml)
+    manifest
+

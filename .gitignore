@@ -16,3 +16,4 @@ artifacts
 paket-files
 out
 .vscode
+.ionide

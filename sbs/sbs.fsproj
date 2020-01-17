@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <Import Project="..\fsc.props" />
   <ItemGroup>
     <None Include="Examples\manifest.yaml" />
     <None Include="Examples\repository.yaml" />
@@ -41,7 +40,8 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Configuration" Version="2.0.0-alpha2" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    <PackageReference Include="FSharp.Core" Version="4.7.0" />
+    <PackageReference Include="YamlDotNet" Version="8.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
 </Project>

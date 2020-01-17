@@ -31,7 +31,7 @@ type View =
       Projects : string set }
 with
     static member Materialize (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (name : string) (patterns : string set) (withDependencies : bool) =
-        let selectedRepos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) patterns
+        let selectedRepos = Helpers.Text.FilterMatch (config.Repositories |> Set) (fun x -> x.Name) patterns
         let dependencies = if withDependencies then gatherDependencies wsDir config selectedRepos Set.empty
                            else selectedRepos |> Seq.map (fun x -> x, Set.empty) |> Map
         let repos = dependencies |> Seq.map (fun x -> x.Key)

@@ -52,9 +52,9 @@ let FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) n
                 | None -> failwithf "Repository %A does not exist" name
 
     let repoDir = wsDir |> Fs.GetDirectory repo.Name
-    let autoDeps, dependencies = repoDir |> Repository.Load
+    let repoConfig = repoDir |> Repository.Load
 
-    let autoDependencies = if autoDeps then scanRepositoryDependencies wsDir repo
+    let autoDependencies = if repoConfig.AutoDependencies then scanRepositoryDependencies wsDir repo
                             else Seq.empty
 
     let getRepo x =
@@ -63,7 +63,7 @@ let FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) n
         | _ -> failwithf "Repository %A is an unknown dependency of %A" x name
 
     let dependencies = autoDependencies 
-                            |> Seq.append dependencies
+                            |> Seq.append repoConfig.Dependencies
                             |> Seq.filter (fun x -> x <> name)
                             |> Set
                             |> Set.map getRepo

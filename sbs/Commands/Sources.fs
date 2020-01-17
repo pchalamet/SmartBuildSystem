@@ -7,7 +7,7 @@ open System.IO
 open Helpers.IO
 
 let rec private innerProcessRepositories (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (patterns : string Set) (deps : bool) action processedRepositories =
-    let repos = Helpers.Text.FilterMatch (config.Repositories) (fun x -> x.Name) patterns
+    let repos = Helpers.Text.FilterMatch (config.Repositories |> Set) (fun x -> x.Name) patterns
     for repo in repos do
         if processedRepositories |> Set.contains repo |> not then
             action repo wsDir

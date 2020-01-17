@@ -15,7 +15,7 @@ let private defaultPSI (command : string) (args : string) (dir : DirectoryInfo) 
                                 Arguments = args,
                                 UseShellExecute = false,
                                 WorkingDirectory = dir.FullName,
-                                LoadUserProfile = true,
+                                //LoadUserProfile = true,
                                 RedirectStandardOutput = redirect,
                                 RedirectStandardError = redirect)
     for var in vars do
