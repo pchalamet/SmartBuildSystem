@@ -4,10 +4,8 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Examples\manifest.yaml" />
     <None Include="Examples\repository.yaml" />
     <None Include="Examples\master.yaml" />
-    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Helpers\IO.fs" />
     <Compile Include="Helpers\Fs.fs" />
     <Compile Include="Helpers\Env.fs" />
@@ -37,6 +35,7 @@
     <Content Include="publish.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
