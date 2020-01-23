@@ -20,7 +20,7 @@ jobs:
 
     # build
     - name: Build
-      run: make build config=Release
+      run: make publish config=Release
 
   publish:
     if: contains(github.ref, 'refs/tags/')
@@ -28,10 +28,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # build
-    - name: Build
-      run: make publish config=Release
-
     # create a github release
     - name: Create Release
       uses: actions/create-release@v1.0.0
