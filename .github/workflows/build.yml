@@ -74,7 +74,7 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: win10.zip
+              asset_path: win10/win10.zip
               asset_name: win10
               asset_content_type: application/zip
 
@@ -84,6 +84,6 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
-              asset_path: osx.zip
+              asset_path: osx/osx.zip
               asset_name: osx
               asset_content_type: application/zip
