@@ -46,13 +46,13 @@ jobs:
           uses: actions/download-artifact@v1
           with:
               name: win10
-              path: ./out/win10.zip
+              path: win10.zip
 
         - name: Download osx artifact
           uses: actions/download-artifact@v1
           with:
               name: osx
-              path: ./out/osx.zip
+              path: osx.zip
 
         # create a release
         - name: Create Release
@@ -73,8 +73,8 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-              asset_path: ./out/win10.zip
-              asset_name: win10.zip
+              asset_path: win10.zip
+              asset_name: win10
               asset_content_type: application/zip
 
         - name: Upload Release Asset
@@ -83,6 +83,6 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
               upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-              asset_path: ./out/osx.zip
-              asset_name: osx.zip
+              asset_path: osx.zip
+              asset_name: osx
               asset_content_type: application/zip
