@@ -1,7 +1,8 @@
 ﻿module CLI.Commands
 
 type InitWorkspace =
-    { Path : string }
+    { Path : string 
+      Uri : string option }
 
 type CloneRepository =
     { Patterns : string list
