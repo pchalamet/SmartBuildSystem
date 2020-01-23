@@ -23,7 +23,7 @@ jobs:
       run: make build config=Release
 
   publish:
-    if: contains('${{ github.ref }}', 'refs/tags/')
+    if: contains(github.ref, 'refs/tags/')
     needs: build
     runs-on: ubuntu-latest
 
