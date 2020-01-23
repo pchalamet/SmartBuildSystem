@@ -46,16 +46,14 @@ jobs:
           uses: actions/download-artifact@v1
           with:
               name: win10
-              path: win10.zip
 
         - name: Download osx artifact
           uses: actions/download-artifact@v1
           with:
               name: osx
-              path: osx.zip
 
         - name: info
-          run: ls -al
+          run: ls -alR
 
           # create a release
         - name: Create Release
