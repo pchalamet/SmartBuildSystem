@@ -35,6 +35,12 @@ jobs:
               name: osx
               path: ./out/osx.zip
 
+        - name: Upload linux artifact
+          uses: actions/upload-artifact@v1
+          with:
+              name: linux
+              path: ./out/linux.zip
+
     publish:
         if: contains(github.ref, 'refs/tags/')
         needs: build
@@ -51,6 +57,11 @@ jobs:
           uses: actions/download-artifact@v1
           with:
               name: osx
+
+        - name: Download linux artifact
+          uses: actions/download-artifact@v1
+          with:
+              name: linux
 
         - name: info
           run: ls -alR
@@ -86,4 +97,14 @@ jobs:
               upload_url: ${{ steps.create_release.outputs.upload_url }}
               asset_path: osx/osx.zip
               asset_name: osx.zip
+              asset_content_type: application/zip
+
+        - name: Upload Release Asset
+          uses: actions/upload-release-asset@v1.0.1
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+              upload_url: ${{ steps.create_release.outputs.upload_url }}
+              asset_path: linux/linux.zip
+              asset_name: linux.zip
               asset_content_type: application/zip
