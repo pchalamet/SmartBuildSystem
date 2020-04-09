@@ -19,12 +19,6 @@ let Version () =
 
 
 
-
-
-let MasterRepository () =
-    System.Configuration.ConfigurationManager.AppSettings.["MasterRepo"]
-
-
 let IsWorkspaceFolder(wsDir : DirectoryInfo) =
     let masterConfig = wsDir |> Helpers.Fs.GetFile "sbs.yaml"
     masterConfig.Exists

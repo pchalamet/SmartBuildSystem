@@ -72,10 +72,8 @@ let private commandUsage args =
 
 let private commandInit args =
     match args with
-    | [Param path]
-        -> Command.Init { Path = path; Uri = None }
     | [Param path; Param uri]
-        -> Command.Init { Path = path; Uri = Some uri }
+        -> Command.Init { Path = path; Uri = uri }
     | _ -> Command.Error MainCommand.Init
 
 let rec private commandClone branch shallow deps args =

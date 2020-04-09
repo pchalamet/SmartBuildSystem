@@ -20,16 +20,7 @@ Usage:
 ````
 
 # Configuration
-Modify `App.config` to link to your master repo. This must be the URL of a valid git repository.
-
-````
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <appSettings>
-    <add key="MasterRepo" value="XXXXXX" />
-  </appSettings>
-</configuration>
-````
+Create a master repository, it's required to initialize a new workspace.
 
 The repository must contains the `sbs.yaml` (in root) file describing all available repositories:
 ````

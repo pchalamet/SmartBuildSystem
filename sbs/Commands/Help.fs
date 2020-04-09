@@ -5,7 +5,7 @@ open CLI.Commands
 let private usageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
-        [MainCommand.Init], "init <folder> : initialize workspace"
+        [MainCommand.Init], "init <folder> <master-repository-uri>: initialize workspace"
         [MainCommand.Clone], "clone [--only] [--shallow] [--branch name] <repository...> : clone repositories using wildcards"
         [MainCommand.View], "view [--only] <name> <repository...> : create a solution with select repositories"
         [MainCommand.Checkout], "checkout <branch> : checkout given branch on all repositories"

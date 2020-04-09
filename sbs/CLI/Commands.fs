@@ -2,7 +2,7 @@
 
 type InitWorkspace =
     { Path : string 
-      Uri : string option }
+      Uri : string }
 
 type CloneRepository =
     { Patterns : string list

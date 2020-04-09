@@ -14,7 +14,7 @@ let Init (cmd : CLI.Commands.InitWorkspace) =
     wsDir |> EnsureExists |> ignore
 
     // first clone master repository
-    let masterUri = cmd.Uri |> Option.defaultWith(Helpers.Env.MasterRepository)
+    let masterUri = cmd.Uri
     let masterRepo = { Configuration.Master.Repository.Name = ""
                        Configuration.Master.Repository.Uri = masterUri }
     Tools.Git.Clone masterRepo wsDir false None |> Helpers.IO.CheckResponseCode
