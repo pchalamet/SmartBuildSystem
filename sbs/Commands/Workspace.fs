@@ -43,11 +43,14 @@ let Exec (cmd : CLI.Commands.ExecCommand) =
                          "SBS_REPO_PATH", repoDir.FullName
                          "SBS_REPO_URL", repo.Uri
                          "SBS_WKS", wsDir.FullName ] |> Map.ofSeq
-            let args = sprintf @"/c ""%s""" cmd.Command
 
             try
                 Console.PrintInfo repo.Name
 
-                Exec.Exec "cmd" args repoDir vars |> IO.CheckResponseCode
+                let shell, carry = if Env.IsWindows() then "cmd", "/c"
+                                   else "sh", "-c"
+                let args = sprintf @"%s ""%s""" carry cmd.Command
+
+                Exec.Exec shell args repoDir vars |> IO.CheckResponseCode
             with
                 e -> printfn "*** %s" e.Message

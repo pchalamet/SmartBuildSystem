@@ -1,5 +1,6 @@
 ﻿module Helpers.Env
 open System.Reflection
+open System.Runtime.InteropServices
 open System.IO
 
 
@@ -17,6 +18,8 @@ let Version () =
     let version = fbAssembly.GetName().Version
     version
 
+let IsWindows () =
+    RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
 
 
 let IsWorkspaceFolder(wsDir : DirectoryInfo) =
