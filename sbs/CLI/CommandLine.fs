@@ -118,7 +118,8 @@ let rec private commandPublish config args =
 
 let private commandExec args =
     match args with
-    | [Param cmd] -> Command.Exec { Command = cmd }
+    | Param cmd :: tail -> Command.Exec { Command = cmd 
+                                          Patterns = tail }
     | _ -> Command.Error MainCommand.Exec
 
 let private commandOpen args =

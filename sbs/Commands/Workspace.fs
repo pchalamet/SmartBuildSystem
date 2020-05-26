@@ -36,7 +36,8 @@ let Init (cmd : CLI.Commands.InitWorkspace) =
 let Exec (cmd : CLI.Commands.ExecCommand) =
     let wsDir = Env.WorkspaceDir()
     let config = Configuration.Master.Load wsDir
-    for repo in config.Repositories do
+    let repos = Helpers.Text.FilterMatch (config.Repositories |> Set) (fun x -> x.Name) (cmd.Patterns |> Set)
+    for repo in repos do
         let repoDir = wsDir |> GetDirectory repo.Name
         if repoDir.Exists then
             let vars = [ "SBS_REPO_NAME", repo.Name

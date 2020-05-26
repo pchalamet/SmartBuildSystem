@@ -15,7 +15,7 @@ let private usageContent() =
         [MainCommand.Build], "rebuild [--release] <view> : rebuild a view" 
         [MainCommand.Build], "publish [--release] <view> : publish apps in view" 
         [MainCommand.Open], "open <view> : open view with your favorite ide" 
-        [MainCommand.Exec], "exec <cmd> :  execute command for each repository (variables: SBS_REPO_NAME, SBS_REPO_PATH, SBS_REPO_URL, SBS_WKS)"
+        [MainCommand.Exec], "exec <cmd> <repository...> :  execute command for each matching repository (variables: SBS_REPO_NAME, SBS_REPO_PATH, SBS_REPO_URL, SBS_WKS)"
         [MainCommand.Doctor], "doctor : check workspace consistency" ]
     content
 

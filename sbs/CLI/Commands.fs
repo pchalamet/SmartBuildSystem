@@ -32,7 +32,8 @@ type OpenView =
     { Name : string }
 
 type ExecCommand =
-    { Command : string }
+    { Patterns : string list
+      Command : string }
 
 type PullRepositories =
     { Dependencies : bool
