@@ -34,13 +34,11 @@ repositories:
 Inside a repository, a `repository.yaml` file (in root) can provide more informations on dependencies:
 ````
 repository:
-    auto-dependencies: true
     dependencies:
         - sbs
         - npolybool
 ````
 
-* auto-dependencies: determine dependencies using *.proj files (.net support only)
 * dependencies: list of repositories this repository depends on
 
 # Commands

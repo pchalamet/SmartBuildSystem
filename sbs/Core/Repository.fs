@@ -21,12 +21,16 @@ let findProjects wsDir (repo : Configuration.Master.Repository) =
 
 
 let private scanRepositoryDependencies (wsDir : DirectoryInfo) (repo : Configuration.Master.Repository) =
+    let fullDir = Path.GetFullPath(wsDir.FullName).ToLowerInvariant()
     let extractRepoFolder ((projectFile, file) : FileInfo * FileInfo) =
-        if file.FullName.ToLowerInvariant().StartsWith(wsDir.FullName.ToLowerInvariant()) |> not then 
-            failwithf "Invalid path %s in project %A" file.FullName projectFile.FullName
+        let fullProjectFile = Path.GetFullPath(projectFile.FullName).ToLowerInvariant()
+        let fullFile = Path.GetFullPath(file.FullName).ToLowerInvariant()
 
-        let relativeFile = file.FullName.Substring(wsDir.FullName.Length + 1)
-        let idx = relativeFile.IndexOf(System.IO.Path.DirectorySeparatorChar)
+        if fullFile.StartsWith(fullDir) |> not then 
+            failwithf "Invalid path %s in project %A" fullFile fullProjectFile
+
+        let relativeFile = fullFile.Substring(fullDir.Length + 1)
+        let idx = relativeFile.IndexOf(Path.DirectorySeparatorChar)
         let repo = relativeFile.Substring(0, idx).ToLowerInvariant()
         repo
 
@@ -54,15 +58,12 @@ let FindDependencies wsDir (masterConfig : Configuration.Master.Configuration) n
     let repoDir = wsDir |> Fs.GetDirectory repo.Name
     let repoConfig = repoDir |> Repository.Load
 
-    let autoDependencies = if repoConfig.AutoDependencies then scanRepositoryDependencies wsDir repo
-                            else Seq.empty
-
     let getRepo x =
         match masterConfig.GetRepository x with
         | Some repo -> repo
         | _ -> failwithf "Repository %A is an unknown dependency of %A" x name
 
-    let dependencies = autoDependencies 
+    let dependencies = Seq.empty 
                             |> Seq.append repoConfig.Dependencies
                             |> Seq.filter (fun x -> x <> name)
                             |> Set
