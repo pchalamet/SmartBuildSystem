@@ -4,13 +4,12 @@ open Helpers.Fs
 open Helpers.Collections
 open Core.Repository
 open System.IO
-open Helpers.IO
 
 let rec private innerProcessRepositories (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (patterns : string Set) (deps : bool) action processedRepositories =
     let repos = Helpers.Text.FilterMatch (config.Repositories |> Set) (fun x -> x.Name) patterns
-    for repo in repos do
-        if processedRepositories |> Set.contains repo |> not then
-            action repo wsDir
+    let repoToProcess = Set.difference repos processedRepositories
+    let results = Threading.ParExec (fun repo -> async { return action repo wsDir }) repoToProcess
+    results |> IO.CheckMultipleResponseCode
 
     let newProcessedRepositories = 
         if deps && repos <> Set.empty then
@@ -37,7 +36,9 @@ let Clone (info : CLI.Commands.CloneRepository) =
         let repoDir = wsDir |> Fs.GetDirectory repo.Name
         if repoDir.Exists |> not then
             Helpers.Console.PrintInfo (sprintf "Cloning repository %A" repo.Name) 
-            Tools.Git.Clone repo wsDir info.Shallow info.Branch |> Helpers.IO.CheckResponseCode
+            Tools.Git.Clone repo wsDir info.Shallow info.Branch
+        else
+            sprintf "Project %s is already cloned" repo.Name |> IO.ResultOk
 
     processRepositories (info.Patterns |> Set.ofList) info.Dependencies doClone Set.empty |> ignore
 
@@ -50,7 +51,7 @@ let Checkout (info : CLI.Commands.CheckoutRepositories) =
     for repo in repos do
         repo.Name |> Helpers.Console.PrintInfo
         let hasError = Tools.Git.Checkout repo wsDir info.Branch
-        match hasError with
+        match hasError |> IO.ResultToError with
         | Some err -> err |> Helpers.Console.PrintError
         | None -> ()
 
@@ -70,6 +71,8 @@ let Pull (info : CLI.Commands.PullRepositories) =
         let repoDir = wsDir |> Fs.GetDirectory repo.Name
         if repoDir.Exists then
             Helpers.Console.PrintInfo (sprintf "Pulling repository %A" repo.Name) 
-            Tools.Git.Pull repo wsDir |> Helpers.IO.CheckResponseCode
+            Tools.Git.Pull repo wsDir
+        else
+            IO.ResultOk ""
 
     processRepositories (info.Patterns |> Set.ofList) info.Dependencies doPull Set.empty |> ignore

@@ -6,6 +6,7 @@
   <ItemGroup>
     <None Include="Examples\repository.yaml" />
     <None Include="Examples\master.yaml" />
+    <Compile Include="Helpers\Threading.fs" />
     <Compile Include="Helpers\IO.fs" />
     <Compile Include="Helpers\Fs.fs" />
     <Compile Include="Helpers\Env.fs" />

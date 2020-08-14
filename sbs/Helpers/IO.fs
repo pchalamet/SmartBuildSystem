@@ -7,6 +7,20 @@ type Result =
       Out: string list
       Error: string list }
 
+let ResultOk msg = {
+    Code = 0
+    Info = msg
+    Out = []
+    Error = []
+}
+
+let ResultErr msg = {
+    Code = 5
+    Info = msg
+    Out = []
+    Error = []
+}
+
 let ResultToError execResult =
     if execResult.Code <> 0 then 
         [sprintf "Operation '%s' failed with error %d" execResult.Info execResult.Code]

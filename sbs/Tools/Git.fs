@@ -28,7 +28,7 @@ let Clone (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (shal
     let depth = shallow ? ("--depth=1", "")
     let targetDir = wsDir |> GetDirectory repo.Name
     let args = sprintf @"clone %s %s %s %A" repo.Uri br depth targetDir.FullName
-    Exec "git" args wsDir Map.empty
+    ExecGetOutput "git" args wsDir Map.empty
 
 let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (version : string) =
     let targetDir = wsDir |> GetDirectory repo.Name
@@ -39,18 +39,17 @@ let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (v
                let currBrErr = ExecGetOutput "git" currBranchArgs targetDir Map.empty
                if currBrErr.Out <> [ version ] then
                    let args = sprintf "checkout %A" version
-                   Exec "git" args targetDir Map.empty |> ResultToError
+                   ExecGetOutput "git" args targetDir Map.empty
                else
-                    printfn "Your branch is up to date with '%s'." version
-                    None
-    | _ -> sprintf "'%s' not found." version |> Some
+                    sprintf "Your branch is up to date with '%s'." version |> Helpers.IO.ResultOk
+    | _ -> sprintf "'%s' not found." version |> Helpers.IO.ResultErr
 
 let Fetch (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) =
     let args = sprintf "fetch --all"
     let targetDir = wsDir |> GetDirectory repo.Name
-    Exec "git" args targetDir Map.empty
+    ExecGetOutput "git" args targetDir Map.empty
 
 let Pull (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) =
     let args = sprintf "pull --ff-only"
     let targetDir = wsDir |> GetDirectory repo.Name
-    Exec "git" args targetDir Map.empty
+    ExecGetOutput "git" args targetDir Map.empty
