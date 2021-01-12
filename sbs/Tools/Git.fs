@@ -27,7 +27,7 @@ let Clone (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (shal
              | Branch.Named name -> sprintf "--branch %s --single-branch" name
     let depth = shallow ? ("--depth=1", "")
     let targetDir = wsDir |> GetDirectory repo.Name
-    let args = sprintf @"clone %s %s %s %A" repo.Uri br depth targetDir.FullName
+    let args = sprintf @"clone --recurse-submodules %s %s %s %A" repo.Uri br depth targetDir.FullName
     ExecGetOutput "git" args wsDir Map.empty
 
 let Checkout (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) (version : string) =
