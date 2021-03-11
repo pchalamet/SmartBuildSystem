@@ -53,3 +53,7 @@ let Pull (repo : Configuration.Master.Repository) (wsDir : DirectoryInfo) =
     let args = sprintf "pull --ff-only"
     let targetDir = wsDir |> GetDirectory repo.Name
     ExecGetOutput "git" args targetDir Map.empty
+
+let LatestChanges (wsDir: DirectoryInfo) =
+    let args = sprintf "diff --name-only HEAD^ HEAD"
+    ExecGetOutput "git" args wsDir Map.empty

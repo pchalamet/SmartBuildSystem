@@ -3,13 +3,17 @@ open System.IO
 open Helpers.Collections
 
 let Build (clean : bool) (mt : bool) (config : string) (wsDir : DirectoryInfo) (slnFile : FileInfo) =
-    let nugetArgs = sprintf "restore %s" slnFile.FullName
-    Helpers.Exec.Exec "nuget" nugetArgs wsDir Map.empty |> Helpers.IO.CheckResponseCode
+    let cleanOpt = clean ? ("--no-incremental", "")
+    let mtOpt = mt ? ("-maxcpucount", "")
+    let confOpt = sprintf "-c %s" config
 
-    let target = clean ? ("Clean,Restore,Build", "Restore,Build")
-    let argMt = mt ? ("/m", "")
+    let args = sprintf "build %s %s %s %s" cleanOpt mtOpt confOpt slnFile.FullName
+    Helpers.Exec.Exec "dotnet" args wsDir Map.empty |> Helpers.IO.CheckResponseCode
 
-    let argConfig = sprintf "/p:Configuration=%s" config
-    let args = sprintf "/nologo /t:%s %s %s %A" target argMt argConfig slnFile.FullName
 
-    Helpers.Exec.Exec "msbuild" args wsDir Map.empty |> Helpers.IO.CheckResponseCode
+let Test (mt : bool) (config : string) (wsDir : DirectoryInfo) (slnFile : FileInfo) =
+    let mtOpt = mt ? ("-maxcpucount", "")
+    let confOpt = sprintf "-c %s" config
+
+    let args = sprintf "test %s %s %s" mtOpt confOpt slnFile.FullName
+    Helpers.Exec.Exec "dotnet" args wsDir Map.empty |> Helpers.IO.CheckResponseCode

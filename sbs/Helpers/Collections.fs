@@ -9,6 +9,7 @@ let (?) (q: bool) (yes: 'a, no: 'a) = if q then yes else no
 type Set<'T when 'T : comparison>
 with
     static member substract a b = Set.difference b a
+    static member choose f s = s |> Seq.choose f |> Set.ofSeq
 
 type Map<'v, 'k when 'v : comparison>
 with

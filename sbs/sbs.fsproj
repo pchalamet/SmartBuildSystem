@@ -13,6 +13,7 @@
     <Compile Include="Helpers\Exec.fs" />
     <Compile Include="Helpers\Console.fs" />
     <Compile Include="Helpers\Collections.fs" />
+    <Compile Include="Helpers\Algorithm.fs" />
     <Compile Include="Helpers\Text.fs" />
     <Compile Include="Helpers\Xml.fs" />
     <Compile Include="Configuration\Master.fs" />

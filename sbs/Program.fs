@@ -5,25 +5,21 @@ open CLI.Commands
 let processMain argv =
     let cmd = CLI.CommandLine.Parse (argv |> Seq.toList)
     match cmd with
-    | Command.Init info -> Commands.Workspace.Init info
-    | Command.Clone info -> Commands.Sources.Clone info
-    | Command.Checkout info -> Commands.Sources.Checkout info
+    | Command.Init info -> Commands.Workspace.Init info; 0
+    | Command.Clone info -> Commands.Sources.Clone info; 0
+    | Command.Checkout info -> Commands.Sources.Checkout info; 0
     | Command.View info -> Commands.View.Create info
-    | Command.Build info -> Commands.View.Build info
-    | Command.Publish info -> Commands.View.Publish info
-    | Command.Usage -> Commands.Help.Usage MainCommand.Unknown
-    | Command.Exec info -> Commands.Workspace.Exec info
-    | Command.Open info -> Commands.View.Open info
-    | Command.Fetch -> Commands.Sources.Fetch ()
-    | Command.Pull info -> Commands.Sources.Pull info
-    | Command.Doctor -> Commands.Doctor.Check ()
-    | Command.Error info -> Commands.Help.Usage info
-    | Command.Version -> Commands.Help.Version ()
-
-    let retCode = match cmd with
-                  | Command.Error _ -> 5
-                  | _ -> 0
-    retCode
+    | Command.Build info -> Commands.View.Build info; 0
+    | Command.Test info -> Commands.View.Test info; 0
+    | Command.Publish info -> Commands.View.Publish info; 0
+    | Command.Usage -> Commands.Help.Usage MainCommand.Unknown; 0
+    | Command.Exec info -> Commands.Workspace.Exec info; 0
+    | Command.Open info -> Commands.View.Open info; 0
+    | Command.Fetch -> Commands.Sources.Fetch (); 0
+    | Command.Pull info -> Commands.Sources.Pull info; 0
+    | Command.Doctor -> Commands.Doctor.Check (); 0
+    | Command.Error info -> Commands.Help.Usage info; 5
+    | Command.Version -> Commands.Help.Version (); 0
 
 
 let tryMain verbose argv =

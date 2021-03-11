@@ -15,13 +15,17 @@ type CheckoutRepositories =
 
 type CreateView =
     {  Name : string
-       Patterns : string list 
-       Dependencies : bool }
+       Pattern : string }
 
 type BuildView =
     { Name : string 
       Config : string
       Clean : bool 
+      Parallel : bool }
+
+type TestView =
+    { Name : string 
+      Config : string
       Parallel : bool }
 
 type PublishView =
@@ -45,8 +49,10 @@ type MainCommand =
     | Init
     | Clone
     | Checkout
+    | Impact
     | View
     | Build
+    | Test
     | Publish
     | Exec
     | Open
@@ -64,6 +70,7 @@ type Command =
     | Checkout of CheckoutRepositories
     | View of CreateView
     | Build of BuildView
+    | Test of TestView
     | Publish of PublishView
     | Exec of ExecCommand
     | Error of MainCommand

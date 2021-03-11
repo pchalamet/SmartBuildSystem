@@ -26,8 +26,9 @@ type private Token =
     | Clone
     | View
     | Build
-    | Publish
     | Rebuild
+    | Test
+    | Publish
     | Checkout
     | Exec
     | Open
@@ -43,8 +44,9 @@ let private (|Token|_|) token =
     | "clone" -> Some Token.Clone
     | "view" -> Some Token.View
     | "build" -> Some Token.Build
-    | "publish" -> Some Token.Publish
     | "rebuild" -> Some Token.Rebuild
+    | "test" -> Some Token.Test
+    | "publish" -> Some Token.Publish
     | "checkout" -> Some Token.Checkout
     | "exec" -> Some Token.Exec
     | "open" -> Some Token.Open
@@ -93,21 +95,29 @@ let private commandCheckout args =
     | [Param branch] -> Command.Checkout { Branch = branch }
     | _ -> Command.Error MainCommand.Checkout
 
-let rec commandView deps args =
+let rec commandView args =
     match args with
-    | TokenOption TokenOption.Only :: tail -> tail |> commandView true
-    | Param name :: Params patterns -> Command.View { Name = name; Patterns = patterns; Dependencies = deps }
+    | [ Param name; Param pattern ] -> Command.View { Name = name; Pattern = pattern }
     | _ -> Command.Error MainCommand.View
 
 let rec private commandBuild par clean config args =
     match args with
     | TokenOption TokenOption.Release :: tail -> tail |> commandBuild par clean "Release" 
-    | TokenOption TokenOption.Parallel :: tail -> tail |> commandBuild true clean "Release" 
+    | TokenOption TokenOption.Parallel :: tail -> tail |> commandBuild true clean config
     | [Param name] -> Command.Build { Name = name 
                                       Clean = clean
                                       Config = config 
                                       Parallel = par }
     | _ -> Command.Error MainCommand.Build
+
+let rec private commandTest par config args =
+    match args with
+    | TokenOption TokenOption.Release :: tail -> tail |> commandTest par "Release" 
+    | TokenOption TokenOption.Parallel :: tail -> tail |> commandTest true config
+    | [Param name] -> Command.Test { Name = name 
+                                     Config = config 
+                                     Parallel = par }
+    | _ -> Command.Error MainCommand.Test
 
 let rec private commandPublish config args =
     match args with
@@ -150,10 +160,11 @@ let Parse (args : string list) : Command =
     | Token Token.Usage :: cmdArgs -> cmdArgs |> commandUsage
     | Token Token.Init :: cmdArgs -> cmdArgs |> commandInit
     | Token Token.Clone :: cmdArgs -> cmdArgs |> commandClone None false true
-    | Token Token.View :: cmdArgs -> cmdArgs |> commandView true
+    | Token Token.View :: cmdArgs -> cmdArgs |> commandView
     | Token Token.Build :: cmdArgs -> cmdArgs |> commandBuild false false "Debug"
-    | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Debug"
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild false true "Debug"
+    | Token Token.Test :: cmdArgs -> cmdArgs |> commandTest false "Debug"
+    | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Debug"
     | Token Token.Checkout :: cmdArgs -> cmdArgs |> commandCheckout
     | Token Token.Exec :: cmdArgs -> cmdArgs |> commandExec
     | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen

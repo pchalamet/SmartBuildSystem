@@ -2,8 +2,10 @@
 open Helpers
 open Helpers.Fs
 open Helpers.Collections
+open Helpers.Xml
 open Core.Repository
 open System.IO
+open System.Xml.Linq
 
 let rec private innerProcessRepositories (wsDir : DirectoryInfo) (config : Configuration.Master.Configuration) (patterns : string Set) (deps : bool) action processedRepositories =
     let repos = Helpers.Text.FilterMatch (config.Repositories |> Set) (fun x -> x.Name) patterns
