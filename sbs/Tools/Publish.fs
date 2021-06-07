@@ -98,10 +98,11 @@ let private loadView (wsDir : DirectoryInfo) viewName =
 
 
 let Publish (wsDir : DirectoryInfo) viewName config =
-    let repositories = loadView wsDir viewName
-    for repository in repositories do
-        let repoDir = wsDir |> GetDirectory repository
-        let manifests = repoDir.EnumerateFiles("manifest.yaml", SearchOption.AllDirectories)
-        for manifest in manifests do
-            let app = Configuration.Manifest.Load manifest
-            publishApp wsDir manifest.Directory config app.Name
+    failwith "Not implemented"
+    // let repositories = loadView wsDir viewName
+    // for repository in repositories do
+    //     let repoDir = wsDir |> GetDirectory repository
+    //     let manifests = repoDir.EnumerateFiles("manifest.yaml", SearchOption.AllDirectories)
+    //     for manifest in manifests do
+    //         let app = Configuration.Manifest.Load manifest
+    //         publishApp wsDir manifest.Directory config app.Name

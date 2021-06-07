@@ -8,10 +8,8 @@ open Helpers.Collections
 
 
 type Project =
-    { ProjectFile: string
-      Files: string set
+    { Files: string set
       Projects: string set }
-
 
 type Projects = Map<string, Project>
 
@@ -40,13 +38,16 @@ let Create (cmd : CLI.Commands.CreateView) =
             let projectFile = getFullPath projectFile            
             match projects |> Map.tryFind projectFile with
             | Some _ -> projects
-            | None -> let files = Path.Combine(getFullPath folder, "*")
-                      let xdoc = XDocument.Load projectFile
-                      let projectDeps = xdoc.Descendants(XNamespace.None + "ProjectReference")
-                                          |> Seq.map (fun x -> !> x.Attribute(XNamespace.None + "Include") : string)
-                                          |> Seq.map (fun x -> Path.Combine(folder, x) |> getFullPath)
-                                          |> Set.ofSeq
-                      let newProject = { ProjectFile = projectFile; Files = set [files]; Projects = projectDeps }
+            | None -> let xdoc = XDocument.Load projectFile
+                      let queryFiles item =
+                            xdoc.Descendants(XNamespace.None + item)
+                                |> Seq.map (fun x -> !> x.Attribute(XNamespace.None + "Include") : string)
+                                |> Seq.map (fun x -> Path.Combine(folder, x) |> getFullPath)
+                                |> Set.ofSeq
+
+                      let files = (queryFiles "None") + (queryFiles "Compile") + (queryFiles "Content") + (set [projectFile])
+                      let projectDeps = queryFiles "ProjectReference"
+                      let newProject = { Files = files; Projects = projectDeps }
                       projects |> Map.add projectFile newProject
 
         let projects = System.IO.Directory.EnumerateFiles(folder)
@@ -63,25 +64,27 @@ let Create (cmd : CLI.Commands.CreateView) =
 
     // identify all projects
     let projects = scanProjects Map.empty rootPath
+    let jsonProjects = Helpers.Json.Serialize projects
+    File.WriteAllText("projects.json", jsonProjects)
 
     // find requested projects
     let checkViewProject file = Text.Match file viewPath
 
     let viewProjects = projects |> Map.filter (fun _ project -> project.Files |> Seq.exists checkViewProject)
-                                |> Seq.map (fun (KeyValue(_, project)) -> project)
+                                |> Seq.map (fun (KeyValue(file, project)) -> {| File = file; Project = project |})
                                 |> Set.ofSeq
-    let getProjectKey (p: Project) = p.ProjectFile
-    let getProjectDeps (p: Project) =
-        projects |> Seq.choose (fun (KeyValue(projectFile, project)) -> if p.Projects |> Set.contains projectFile then Some project
-                                                                        else None) |> Set.ofSeq
+    let getProjectKey (fp : {| File: string; Project: Project |}) = fp.File
+    let getProjectDeps (fp: {| File: string; Project: Project |}) =
+        projects |> Seq.choose (fun (KeyValue(file, project)) -> if fp.Project.Projects |> Set.contains file then Some {| File = file; Project = project |}
+                                                                 else None) |> Set.ofSeq
     let noProjects (_) = Set.empty
     let closureProjects = Algorithm.Closure viewProjects getProjectKey getProjectDeps noProjects
 
     let closureTestProjects = 
-        let closureTestProjectKeys = closureProjects |> Set.map (fun x -> Path.GetFileNameWithoutExtension(x.ProjectFile) + ".tests")
-        projects |> Seq.choose (fun (KeyValue(projectFile, project)) -> let testfile = Path.GetFileNameWithoutExtension(projectFile)
-                                                                        if closureTestProjectKeys |> Set.contains testfile then Some project
-                                                                        else None)
+        let closureTestProjectKeys = closureProjects |> Set.map (fun x -> Path.GetFileNameWithoutExtension(x.File) + ".tests")
+        projects |> Seq.choose (fun (KeyValue(file, project)) -> let testfile = Path.GetFileNameWithoutExtension(file)
+                                                                 if closureTestProjectKeys |> Set.contains testfile then Some {| File = file; Project = project |}
+                                                                 else None)
                  |> Set.ofSeq
 
     // get latest changes
@@ -91,11 +94,11 @@ let Create (cmd : CLI.Commands.CreateView) =
     // compute impacted projects
     let fileImpacted filePattern = latestChanges |> List.exists (fun impactedFile -> Text.Match impactedFile filePattern)
     let impactedProjects = projects |> Map.filter (fun _ project -> project.Files |> Seq.exists fileImpacted)
-                                    |> Seq.map (fun (KeyValue(_, project)) -> project)
+                                    |> Seq.map (fun (KeyValue(file, project)) -> {| File = file; Project = project |})
                                     |> Set.ofSeq
     let impactedProjects = Set.intersect closureProjects impactedProjects
 
-    let projectFiles = (closureProjects + closureTestProjects) |> Seq.map (fun p -> FileInfo(p.ProjectFile)) |> List.ofSeq
+    let projectFiles = (closureProjects + closureTestProjects) |> Seq.map (fun p -> FileInfo(p.File)) |> List.ofSeq
     generateSolution (DirectoryInfo rootPath) cmd.Name projectFiles
 
     // compute impacted projects

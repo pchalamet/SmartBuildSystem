@@ -1,0 +1,8 @@
+<Project>
+ <PropertyGroup>
+   <WarningsAsErrors>FS0025</WarningsAsErrors>
+   <WarningsAsErrors>FS3189</WarningsAsErrors>
+   <WarningsAsErrors>FS0058</WarningsAsErrors>
+   <TreatsWarningAsErrors>true</TreatsWarningAsErrors>
+ </PropertyGroup>
+</Project>
