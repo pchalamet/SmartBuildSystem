@@ -22,6 +22,7 @@
     <Compile Include="Tools\Git.fs" />
     <Compile Include="CLI\Commands.fs" />
     <Compile Include="CLI\CommandLine.fs" />
+    <Compile Include="Core\Project.fs" />
     <Compile Include="Core\Solution.fs" />
     <Compile Include="Commands\View.fs" />
     <Compile Include="Commands\Help.fs" />
