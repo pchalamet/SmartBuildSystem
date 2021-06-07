@@ -20,7 +20,7 @@ jobs:
 
         # build
         - name: Build
-          run: make publish config=Release
+          run: make publish-trimmed config=Release
 
         # publish artifacts
         - name: Upload win10 artifact
