@@ -2,9 +2,14 @@ config ?= Debug
 
 build:
 	dotnet build -c $(config) sbs
+
+test: build
 	dotnet test -c $(config) sbs
 
 publish: build
+	dotnet publish -c $(config) -o $(PWD)/out/net sbs
+
+publish-trimmed: build
 	rm -rf out
 	mkdir out
 	dotnet publish -c $(config) -r win10-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -o $(PWD)/out/win10 sbs

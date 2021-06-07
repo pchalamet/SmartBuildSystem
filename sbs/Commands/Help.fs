@@ -25,9 +25,9 @@ let private usageContent() =
 let Usage (what : MainCommand) =
     let lines = usageContent () |> List.filter (fun (cmd, _) -> cmd |> Seq.contains what || what = MainCommand.Unknown)
                                 |> List.map (fun (_, desc) -> desc)
+    printfn "Current directory: %s\n" (System.Environment.CurrentDirectory)
     printfn "Usage:"
     lines |> Seq.iter (printfn "  %s")
-
 
 let private versionContent() =
     let version = Helpers.Env.Version()

@@ -95,16 +95,13 @@ let Create (cmd : CLI.Commands.CreateView) =
                                     |> Set.ofSeq
     let impactedProjects = Set.intersect closureProjects impactedProjects
 
+    let projectFiles = (closureProjects + closureTestProjects) |> Seq.map (fun p -> FileInfo(p.ProjectFile)) |> List.ofSeq
+    generateSolution (DirectoryInfo rootPath) cmd.Name projectFiles
+
     // compute impacted projects
-    if impactedProjects <> Set.empty then
-        let projectFiles = (closureProjects + closureTestProjects) |> Seq.map (fun p -> FileInfo(p.ProjectFile)) |> List.ofSeq
-        generateSolution (DirectoryInfo rootPath) cmd.Name projectFiles
-        0
+    if impactedProjects <> Set.empty then 0
     else
-        let slnFileName = sprintf "%s.sln" cmd.Name
-        let sln = (DirectoryInfo rootPath) |> Fs.GetFile slnFileName
-        sln.Delete()
-        printfn "WARNING: build is not required"
+        printfn "INFO: build is not required"
         5
     
 let Build (cmd : CLI.Commands.BuildView) =
