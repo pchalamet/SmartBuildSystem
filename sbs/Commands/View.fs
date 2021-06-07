@@ -2,8 +2,6 @@
 open System.IO
 open System.Xml.Linq
 open Helpers
-open Helpers.Fs
-open Core.View
 open Helpers.Xml
 open Helpers.Collections
 
@@ -11,14 +9,11 @@ open Helpers.Collections
 
 type Project =
     { ProjectFile: string
-      IsTest: bool
       Files: string set
       Projects: string set }
 
+
 type Projects = Map<string, Project>
-
-let emptyProject = { ProjectFile = ""; IsTest = false; Files = Set.empty; Projects = Set.empty }
-
 
 
 
@@ -32,27 +27,26 @@ let private generateSolution (wsDir : DirectoryInfo) name (projects : FileInfo s
 
 
 let Create (cmd : CLI.Commands.CreateView) =
+    let validExtensions = set [ ".fsproj"; ".csproj"; ".sqlproj"; ".vbproj"; ".pssproj"; "dcproj" ]
+
     let getFullPath (file: string) = Path.GetFullPath(file.Replace("\\", "/"))
 
     let isProjectFile (filename: string) =
-        let validExtensions = set [".fsproj"; ".csproj"; ".sqlproj"]
         let extension = System.IO.Path.GetExtension(filename)
         validExtensions |> Set.contains extension
 
     let rec scanProjects (projects: Map<string, Project>) (folder: string) =
         let parseProject projects folder (projectFile: string) =
-            let projectFile = getFullPath projectFile
+            let projectFile = getFullPath projectFile            
             match projects |> Map.tryFind projectFile with
             | Some _ -> projects
-            | None -> let projects = projects |> Map.add projectFile emptyProject
-                      let files = Path.Combine(getFullPath folder, "*")
+            | None -> let files = Path.Combine(getFullPath folder, "*")
                       let xdoc = XDocument.Load projectFile
                       let projectDeps = xdoc.Descendants(XNamespace.None + "ProjectReference")
                                           |> Seq.map (fun x -> !> x.Attribute(XNamespace.None + "Include") : string)
                                           |> Seq.map (fun x -> Path.Combine(folder, x) |> getFullPath)
                                           |> Set.ofSeq
-                      let isTest = projectFile.Contains(".tests")
-                      let newProject = { ProjectFile = projectFile; IsTest = isTest; Files = set [files]; Projects = projectDeps }
+                      let newProject = { ProjectFile = projectFile; Files = set [files]; Projects = projectDeps }
                       projects |> Map.add projectFile newProject
 
         let projects = System.IO.Directory.EnumerateFiles(folder)
