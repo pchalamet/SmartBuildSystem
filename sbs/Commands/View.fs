@@ -1,15 +1,7 @@
 ﻿module Commands.View
 open System.IO
-open System.Xml.Linq
 open Helpers
-open Helpers.Xml
 open Helpers.Collections
-open Core.Project
-
-
-type FileProject =
-    { File: string
-      Project: Project }
 
 
 let private generateSolution (wsDir : DirectoryInfo) name projectFiles =
@@ -21,29 +13,13 @@ let private generateSolution (wsDir : DirectoryInfo) name projectFiles =
 
 
 let Create (cmd : CLI.Commands.CreateView) =
-
     let rootPath = System.Environment.CurrentDirectory
+    let selector = cmd.Pattern
 
     let projects = Core.Project.FindProjects rootPath
-    File.WriteAllText("projects.json", Helpers.Json.Serialize projects)
+    File.WriteAllText("projects.json", Json.Serialize projects)
 
-    let projects = projects |> Seq.map (fun (KeyValue(file, project)) -> { File = file; Project = project }) |> Set.ofSeq
-
-    // find requested projects
-    let repoPath = Path.Combine(rootPath, cmd.Pattern)
-    let viewPath = Path.Combine(repoPath, "*") |> Fs.GetFullPath
-    let checkViewProject file = Text.Match file viewPath
-
-    let viewProjects = projects |> Set.filter (fun fp -> fp.Project.Files |> Seq.exists checkViewProject)
-    let getProjectKey (fp: FileProject) = fp.File
-    let getProjectDeps (fp: FileProject) = projects |> Set.filter (fun ofp -> fp.Project.Projects |> Set.contains ofp.File)
-    let noProjects (_) = Set.empty
-    let closureProjects = Algorithm.Closure viewProjects getProjectKey getProjectDeps noProjects
-
-    let closureTestProjects = 
-        let closureTestProjectKeys = closureProjects |> Set.map (fun x -> Path.GetFileNameWithoutExtension(x.File) + ".tests")
-        projects |> Set.filter (fun (fp: FileProject) -> let testfile = Path.GetFileNameWithoutExtension(fp.File)
-                                                         closureTestProjectKeys |> Set.contains testfile)
+    let closureProjects, closureTestProjects = Core.Project.ComputeClosure rootPath selector projects
 
     // get latest changes
     let latestChangesResult = rootPath |> DirectoryInfo |> Tools.Git.LatestChanges

@@ -12,6 +12,12 @@ type Project =
 type Projects = Map<string, Project>
 
 
+type FileProject =
+    { File: string
+      Project: Project }
+
+
+
 let FindProjects rootPath =
     let validExtensions = set [ ".fsproj"; ".csproj"; ".sqlproj"; ".vbproj"; ".pssproj"; "dcproj" ]
 
@@ -44,4 +50,27 @@ let FindProjects rootPath =
                             |> Seq.fold (fun projects folder -> scanProjects projects folder) projects
         projects
 
-    scanProjects Map.empty rootPath
+    let projects = scanProjects Map.empty rootPath
+                        |> Seq.map (fun (KeyValue(file, project)) -> { File = file; Project = project }) |> Set.ofSeq
+    projects
+
+
+let ComputeClosure rootPath selector projects =
+    // find requested projects
+    let repoPath = Path.Combine(rootPath, selector)
+    let viewPath = Path.Combine(repoPath, "*") |> Fs.GetFullPath
+    let checkViewProject file = Text.Match file viewPath
+
+    let viewProjects = projects |> Set.filter (fun fp -> fp.Project.Files |> Seq.exists checkViewProject)
+    let getProjectKey (fp: FileProject) = fp.File
+    let getProjectDeps (fp: FileProject) = projects |> Set.filter (fun ofp -> fp.Project.Projects |> Set.contains ofp.File)
+    let noProjects (_) = Set.empty
+    let closureProjects = Algorithm.Closure viewProjects getProjectKey getProjectDeps noProjects
+
+    let closureTestProjects = 
+        let closureTestProjectKeys = closureProjects |> Set.map (fun x -> Path.GetFileNameWithoutExtension(x.File) + ".tests")
+        projects |> Set.filter (fun (fp: FileProject) -> let testfile = Path.GetFileNameWithoutExtension(fp.File)
+                                                         closureTestProjectKeys |> Set.contains testfile)
+
+    closureProjects, closureTestProjects
+
