@@ -25,7 +25,6 @@ type OpenView =
 [<RequireQualifiedAccess>]
 type MainCommand =
     | Usage
-    | Impact
     | View
     | Build
     | Test

@@ -5,7 +5,6 @@ open CLI.Commands
 let private usageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
-        [MainCommand.Impact], "impact <sub-path> : compute impact"
         [MainCommand.View], "view <name> <folders...> : create a solution with select folders"
         [MainCommand.Build], "build [--release] [--parallel] <view> : build a view" 
         [MainCommand.Build], "rebuild [--release] <view> : rebuild a view" 
