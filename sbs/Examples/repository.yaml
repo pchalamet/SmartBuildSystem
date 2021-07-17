@@ -1,4 +1,0 @@
-﻿repository:
-    dependencies:
-        - infrastructure
-        - service

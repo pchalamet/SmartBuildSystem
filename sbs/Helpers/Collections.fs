@@ -5,13 +5,15 @@ type set<'T when 'T : comparison> = Set<'T>
 
 let (?) (q: bool) (yes: 'a, no: 'a) = if q then yes else no
 
+module Set =
+    let substract a b = Set.difference b a
+    let choose f s = s |> Seq.choose f |> Set.ofSeq
 
-type Set<'T when 'T : comparison>
-with
-    static member substract a b = Set.difference b a
-    static member choose f s = s |> Seq.choose f |> Set.ofSeq
+module Map =
+    let choose f m =
+        m |> Map.fold (fun acc k v -> match f k v with
+                                      | Some x -> acc |> Map.add k x
+                                      | _ -> acc) Map.empty
 
-type Map<'v, 'k when 'v : comparison>
-with
-    static member union (p:Map<'a,'b>) (q:Map<'a,'b>) = 
-        Map.fold (fun acc key value -> acc |> Map.add key value) p q
+    let union map1 map2 =
+        Seq.append map1 map2 |> Map.ofSeq

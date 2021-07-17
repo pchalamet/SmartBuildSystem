@@ -53,4 +53,3 @@ let CheckMultipleResponseCode execResults =
     let errors = execResults |> Seq.choose (fun execResult -> execResult |> ResultToError)
     if errors |> Seq.isEmpty |> not then
         errors |> String.concat System.Environment.NewLine |> failwith
-  

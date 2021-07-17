@@ -27,3 +27,5 @@ let CurrentDir () =
 let ReadAllText (fileName : FileInfo) =
     fileName.FullName |> File.ReadAllText
 
+  
+let GetFullPath (file: string) = Path.GetFullPath(file.Replace("\\", "/"))

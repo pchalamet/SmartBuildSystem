@@ -5,19 +5,12 @@ open CLI.Commands
 let processMain argv =
     let cmd = CLI.CommandLine.Parse (argv |> Seq.toList)
     match cmd with
-    | Command.Init info -> Commands.Workspace.Init info; 0
-    | Command.Clone info -> Commands.Sources.Clone info; 0
-    | Command.Checkout info -> Commands.Sources.Checkout info; 0
     | Command.View info -> Commands.View.Create info
     | Command.Build info -> Commands.View.Build info; 0
     | Command.Test info -> Commands.View.Test info; 0
     | Command.Publish info -> Commands.View.Publish info; 0
     | Command.Usage -> Commands.Help.Usage MainCommand.Unknown; 0
-    | Command.Exec info -> Commands.Workspace.Exec info; 0
     | Command.Open info -> Commands.View.Open info; 0
-    | Command.Fetch -> Commands.Sources.Fetch (); 0
-    | Command.Pull info -> Commands.Sources.Pull info; 0
-    | Command.Doctor -> Commands.Doctor.Check (); 0
     | Command.Error info -> Commands.Help.Usage info; 5
     | Command.Version -> Commands.Help.Version (); 0
 

@@ -1,5 +1,0 @@
-﻿repositories:
-    - name: infrastructure
-      uri: toto@pouet.com/infrastructure
-    - name: service
-      uri: toot@pouet.com/service
