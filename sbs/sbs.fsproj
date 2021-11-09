@@ -1,48 +1,48 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="Examples\repository.yaml" />
-    <None Include="Examples\master.yaml" />
-    <Compile Include="Helpers\Threading.fs" />
-    <Compile Include="Helpers\IO.fs" />
-    <Compile Include="Helpers\Fs.fs" />
-    <Compile Include="Helpers\Env.fs" />
-    <Compile Include="Helpers\Exec.fs" />
-    <Compile Include="Helpers\Console.fs" />
-    <Compile Include="Helpers\Collections.fs" />
-    <Compile Include="Helpers\Algorithm.fs" />
-    <Compile Include="Helpers\Text.fs" />
-    <Compile Include="Helpers\Xml.fs" />
-    <Compile Include="Configuration\Master.fs" />
-    <Compile Include="Configuration\Repository.fs" />
-    <Compile Include="Configuration\Manifest.fs" />
-    <Compile Include="Tools\Publish.fs" />
-    <Compile Include="Tools\MsBuild.fs" />
-    <Compile Include="Tools\Git.fs" />
-    <Compile Include="CLI\Commands.fs" />
-    <Compile Include="CLI\CommandLine.fs" />
-    <Compile Include="Core\Project.fs" />
-    <Compile Include="Core\Repository.fs" />
-    <Compile Include="Core\View.fs" />
-    <Compile Include="Core\Solution.fs" />
-    <Compile Include="Commands\Sources.fs" />
-    <Compile Include="Commands\Workspace.fs" />
-    <Compile Include="Commands\View.fs" />
-    <Compile Include="Commands\Doctor.fs" />
-    <Compile Include="Commands\Help.fs" />
-    <None Include="App.config" />
-    <Content Include="publish.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Program.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="5.0.0" />
-    <PackageReference Include="YamlDotNet" Version="8.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
-  </ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="Examples\repository.yaml"/>
+		<None Include="Examples\master.yaml"/>
+		<Compile Include="Helpers\Threading.fs"/>
+		<Compile Include="Helpers\IO.fs"/>
+		<Compile Include="Helpers\Fs.fs"/>
+		<Compile Include="Helpers\Env.fs"/>
+		<Compile Include="Helpers\Exec.fs"/>
+		<Compile Include="Helpers\Console.fs"/>
+		<Compile Include="Helpers\Collections.fs"/>
+		<Compile Include="Helpers\Algorithm.fs"/>
+		<Compile Include="Helpers\Text.fs"/>
+		<Compile Include="Helpers\Xml.fs"/>
+		<Compile Include="Configuration\Master.fs"/>
+		<Compile Include="Configuration\Repository.fs"/>
+		<Compile Include="Configuration\Manifest.fs"/>
+		<Compile Include="Tools\Publish.fs"/>
+		<Compile Include="Tools\MsBuild.fs"/>
+		<Compile Include="Tools\Git.fs"/>
+		<Compile Include="CLI\Commands.fs"/>
+		<Compile Include="CLI\CommandLine.fs"/>
+		<Compile Include="Core\Project.fs"/>
+		<Compile Include="Core\Repository.fs"/>
+		<Compile Include="Core\View.fs"/>
+		<Compile Include="Core\Solution.fs"/>
+		<Compile Include="Commands\Sources.fs"/>
+		<Compile Include="Commands\Workspace.fs"/>
+		<Compile Include="Commands\View.fs"/>
+		<Compile Include="Commands\Doctor.fs"/>
+		<Compile Include="Commands\Help.fs"/>
+		<None Include="App.config"/>
+		<Content Include="publish.targets">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Compile Include="AssemblyInfo.fs"/>
+		<Compile Include="Program.fs"/>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FSharp.Core" Version="6.0.1"/>
+		<PackageReference Include="YamlDotNet" Version="11.2.1"/>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0"/>
+	</ItemGroup>
 </Project>
