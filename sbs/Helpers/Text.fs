@@ -38,7 +38,7 @@ let FilterMatch<'T when 'T : comparison> (items : 'T set) (strOf : 'T -> string)
 
 
 let GenerateGuidFromString (input : string) =
-    use provider = new System.Security.Cryptography.MD5CryptoServiceProvider()
+    use provider = System.Security.Cryptography.MD5.Create()
     let inputBytes = System.Text.Encoding.GetEncoding(0).GetBytes(input)
     let hashBytes = provider.ComputeHash(inputBytes)
     let hashGuid = System.Guid(hashBytes)
