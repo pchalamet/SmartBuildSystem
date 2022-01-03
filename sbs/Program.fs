@@ -10,7 +10,6 @@ let processMain argv =
     | Command.Test info -> Commands.View.Test info; 0
     | Command.Publish info -> Commands.View.Publish info; 0
     | Command.Usage -> Commands.Help.Usage MainCommand.Unknown; 0
-    | Command.Open info -> Commands.View.Open info; 0
     | Command.Error info -> Commands.Help.Usage info; 5
     | Command.Version -> Commands.Help.Version (); 0
 

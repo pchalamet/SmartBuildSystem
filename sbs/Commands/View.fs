@@ -67,11 +67,3 @@ let Publish (cmd : CLI.Commands.PublishView) =
 
     sprintf "Publishing view %A" cmd.Name |> Helpers.Console.PrintInfo
     Tools.Publish.Publish wsDir cmd.Name cmd.Config
-
-let Open (cmd : CLI.Commands.OpenView) =
-    let wsDir = System.Environment.CurrentDirectory |> DirectoryInfo
-    let slnFileName = sprintf "%s.sln" cmd.Name
-    let sln = wsDir |> Fs.GetFile slnFileName
-    if sln.Exists |> not then failwithf "View %A does not exist" cmd.Name
-    Exec.Spawn sln.FullName "" "open"
-

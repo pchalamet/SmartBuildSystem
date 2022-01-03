@@ -5,12 +5,11 @@ open CLI.Commands
 let private usageContent() =
     let content = [
         [MainCommand.Usage], "usage : display help on command or area"
-        [MainCommand.View], "view <name> <folders...> : create a solution with select folders"
+        [MainCommand.View], "view <name> <folders...> : create a solution with selected projects"
         [MainCommand.Build], "build [--release] [--parallel] <view> : build a view" 
         [MainCommand.Build], "rebuild [--release] <view> : rebuild a view" 
         [MainCommand.Test], "test [--release] [--parallel] <view> : test a view" 
         [MainCommand.Publish], "publish [--release] <view> : publish apps in view" 
-        [MainCommand.Open], "open <view> : open view with your favorite ide" 
     ]
     content
 

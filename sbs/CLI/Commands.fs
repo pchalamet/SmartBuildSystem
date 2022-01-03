@@ -41,4 +41,3 @@ type Command =
     | Test of TestView
     | Publish of PublishView
     | Error of MainCommand
-    | Open of OpenView

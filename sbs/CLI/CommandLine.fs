@@ -1,8 +1,8 @@
 ﻿
 module CLI.CommandLine
 open Commands
-open System.IO
 
+[<RequireQualifiedAccess>]
 type private TokenOption =
     | Only
     | Shallow
@@ -10,8 +10,7 @@ type private TokenOption =
     | Branch
     | Parallel
     
-let private (|TokenOption|_|) token =
-    match token with
+let private (|TokenOption|_|) = function
     | "--only" -> Some TokenOption.Only
     | "--shallow" -> Some TokenOption.Shallow
     | "--release" -> Some TokenOption.Release
@@ -19,6 +18,7 @@ let private (|TokenOption|_|) token =
     | "--parallel" -> Some TokenOption.Parallel
     | _ -> None
 
+[<RequireQualifiedAccess>]
 type private Token =
     | Version
     | Usage
@@ -29,8 +29,7 @@ type private Token =
     | Publish
     | Open
 
-let private (|Token|_|) token =
-    match token with
+let private (|Token|_|) = function
     | "version" -> Some Token.Version
     | "usage" -> Some Token.Usage
     | "view" -> Some Token.View
@@ -89,11 +88,6 @@ let rec private commandPublish config args =
                                         Config = config }
     | _ -> Command.Error MainCommand.Publish
 
-let private commandOpen args =
-    match args with
-    | [Param name] -> Command.Open { Name = name }
-    | _ -> Command.Error MainCommand.Open
-
 let Parse (args : string list) : Command =
     match args with
     | [Token Token.Version] -> Command.Version
@@ -103,7 +97,6 @@ let Parse (args : string list) : Command =
     | Token Token.Rebuild :: cmdArgs -> cmdArgs |> commandBuild false true "Debug"
     | Token Token.Test :: cmdArgs -> cmdArgs |> commandTest false "Debug"
     | Token Token.Publish :: cmdArgs -> cmdArgs |> commandPublish "Debug"
-    | Token Token.Open :: cmdArgs -> cmdArgs |> commandOpen
     | _ -> Command.Error MainCommand.Usage
 
 let IsVerbose (args : string list) : (bool * string list) =
