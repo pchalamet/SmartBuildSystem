@@ -49,17 +49,17 @@ jobs:
         steps:
         # first download artifacts
         - name: Download win10 artifact
-          uses: actions/download-artifact@v1
+          uses: actions/download-artifact@v4.1.7
           with:
               name: win10
 
         - name: Download osx artifact
-          uses: actions/download-artifact@v1
+          uses: actions/download-artifact@v4.1.7
           with:
               name: osx
 
         - name: Download linux artifact
-          uses: actions/download-artifact@v1
+          uses: actions/download-artifact@v4.1.7
           with:
               name: linux
 
